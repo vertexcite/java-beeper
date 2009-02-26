@@ -12,14 +12,15 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-class MonitorWindow extends JFrame implements SnoozeObserver {
+public class MonitorWindow extends JFrame implements SnoozeObserver {
 
 	private SnoozeController snoozeController;
-	JPanel panel1 = new JPanel();
-	JTextField resetSnoozeDelayTime = new JTextField("20");
-	private JTextArea timeRemaining = new JTextArea("00:20:00");
+	private JPanel panel1 = new JPanel();
+	private JTextField resetSnoozeDelayTime = new JTextField("20");
+	private JTextArea timeRemaining = new JTextArea(minutesAsTimeStringHHMMSS(20));
 
 	private void setupWidgets() {
+		setTitle("Java Beeper");
 		timeRemaining.setFont(new Font("Serif", Font.BOLD, 72));
 		getContentPane().add(panel1, BorderLayout.NORTH);
 		panel1.setLayout(new GridLayout(2, 2));
@@ -53,6 +54,7 @@ class MonitorWindow extends JFrame implements SnoozeObserver {
 	public void setTimeRemainingDisplay(double paramMinutesRemaining) {
 		String timeStringHHMMSS = minutesAsTimeStringHHMMSS(paramMinutesRemaining);
 		timeRemaining.setText(timeStringHHMMSS);
+		setTitle("Java Beeper: " + timeStringHHMMSS);
 	}
 
 	private String minutesAsTimeStringHHMMSS(double paramMinutesRemaining) {
@@ -68,7 +70,6 @@ class MonitorWindow extends JFrame implements SnoozeObserver {
 	@Override
 	public void setSnoozeDuration(double snoozeDurationMinutes) {
 		resetSnoozeDelayTime.setText(Double.toString(snoozeDurationMinutes));
-		repaint();
 	}
 
 }

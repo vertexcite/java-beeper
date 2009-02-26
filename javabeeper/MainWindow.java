@@ -26,15 +26,16 @@ public class MainWindow extends JFrame implements SnoozeObserver {
 	private SnoozeController controller;
 
 	private void setupWidgets() {
+		setTitle("Restart timer");
 		getContentPane().add(panel1, BorderLayout.NORTH);
 		panel1.setLayout(new GridLayout(2, 2));
 		panel1.add(snoozeButton);
 		panel1.add(snoozeTimeMinutes);
-		panel1.add(new JTextField("You can put an arbitrary lable here."));
+		panel1.add(new JTextField("You can put an arbitrary label here."));
 
 		ActionListener snoozeActionListener = new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				controller.snoozeActionTriggered(Double.parseDouble(snoozeTimeMinutes.getText()));
+				controller.startSnoozing(Double.parseDouble(snoozeTimeMinutes.getText()));
 			}
 		};
 

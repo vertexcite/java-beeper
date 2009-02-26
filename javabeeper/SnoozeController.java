@@ -19,7 +19,7 @@ public class SnoozeController {
 				controller.addObserver(controller.monitorWindow = new MonitorWindow(controller));
 			}
 		});
-		controller.heartBeat();
+		controller.heartBeatLoop();
 	}
 
 	protected void addObserver(SnoozeObserver observer) {
@@ -32,6 +32,12 @@ public class SnoozeController {
 		updateObservers();
 	}
 
+	public synchronized void startSnoozing(final double paramSnoozeDurationMinutes) {
+		snoozing = true;
+		hideAlert();
+		setSnoozeDurationFromGui(paramSnoozeDurationMinutes);
+}
+
 	private void updateObservers() {
 		for (SnoozeObserver observer : observers) {
 			observer.setSnoozeDuration(snoozeDurationMinutes);
@@ -43,13 +49,6 @@ public class SnoozeController {
 	private long nextIrritateTimeMilliseconds = 0;
 	private double snoozeDurationMinutes = 20;
 
-	public synchronized void snoozeActionTriggered(double paramSnoozeDurationMinutes) {
-		snoozeDurationMinutes = paramSnoozeDurationMinutes;
-		snoozing = true;
-		nextWakeTimeMilliseconds = System.currentTimeMillis() + fromMinutesToMilliseconds(paramSnoozeDurationMinutes);
-		hideAlert();
-	}
-
 	public synchronized double getSnoozeDurationMinutes() {
 		return snoozeDurationMinutes;
 	}
@@ -59,7 +58,7 @@ public class SnoozeController {
 	 * remaining display, - and displays alert if time has run out, -
 	 * "Irritates", i.e. re-shows alert every minute if it was not "snoozed"
 	 */
-	private void heartBeat() {
+	private void heartBeatLoop() {
 		final long heartBeatPeriodMilliseconds = 1000;
 		long nextHeartBeatTime = System.currentTimeMillis();
 		while (true) {
@@ -86,7 +85,7 @@ public class SnoozeController {
 	}
 
 	private void updateNextIrritateTime() {
-		nextIrritateTimeMilliseconds = System.currentTimeMillis() + fromMinutesToMilliseconds(1);
+		nextIrritateTimeMilliseconds = System.currentTimeMillis() + MILLISECONDS_PER_SECOND + fromMinutesToMilliseconds(1);
 	}
 
 	private void showAlert() {
@@ -111,7 +110,6 @@ public class SnoozeController {
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				monitorWindow.setTimeRemainingDisplay(minutesRemaining);
-				monitorWindow.setSnoozeDuration(snoozeDurationMinutes); // TODO Really struggling with how to get this to work
 			}
 		});
 	}
