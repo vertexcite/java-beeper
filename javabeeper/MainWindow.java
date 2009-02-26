@@ -16,96 +16,103 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class MainWindow extends JFrame {
-  
-  public static void main(String args[]) {
-  	MainWindow theWindow = new MainWindow();
-  }
-  
-  protected long snoozeDuration = 20 * 1000 * 60; // Twenty minutes.
-  JButton snoozeButton = new JButton( "Snooze" );
-  JPanel panel1 = new JPanel();
-  JTextField snoozeTextField = new JTextField("20");
-  private boolean showing = true;
 
-    
-  public MainWindow() {
-  	
-  	getContentPane().add( panel1, BorderLayout.NORTH );
-  	panel1.setLayout( new GridLayout( 1, 2 ) );
-  	panel1.add( snoozeButton );
-  	panel1.add( snoozeTextField );
-  	
-  	snoozeButton.addActionListener( 
-  	  new ActionListener() {
+	private static final long serialVersionUID = 3261204676180469008L;
 
-		public void actionPerformed(ActionEvent arg0) {
-			snoozeClicked();
-			
+	public static void main(String args[]) {
+		new MainWindow();
+	}
+
+	protected long snoozeDuration = 20 * 1000 * 60; // Twenty minutes.
+	JButton snoozeButton = new JButton("Snooze");
+	JPanel panel1 = new JPanel();
+	JTextField snoozeTextField = new JTextField("20");
+	private boolean showing = true;
+
+	private void setSnoozeDurationFromGui() {
+		snoozeDuration = (long) (Double
+				.parseDouble(snoozeTextField.getText()) * 1000 * 60);
+	}
+	
+	
+	public MainWindow() {
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+
+				getContentPane().add(panel1, BorderLayout.NORTH);
+				panel1.setLayout(new GridLayout(1, 2));
+				panel1.add(snoozeButton);
+				panel1.add(snoozeTextField);
+				
+				ActionListener snoozeActionListener = new ActionListener() {
+
+					public void actionPerformed(ActionEvent arg0) {
+						setSnoozeDurationFromGui();
+						snoozeClicked();
+					}
+				}; 
+
+				snoozeButton.addActionListener(snoozeActionListener);
+
+				snoozeTextField.addActionListener(snoozeActionListener);
+
+				setDefaultCloseOperation(EXIT_ON_CLOSE);
+				Dimension max = getMaximumSize();
+				setBounds(0, 0, max.width, max.height);
+				setVisible(true);
+				showing = true;
+			}
+		});
+		irritate();
+	}
+
+	private void irritate() {
+		while (showing) {
+			final int oneMinute = 60 * 1000;
+			try {
+				Thread.sleep(oneMinute);
+			} catch (InterruptedException e) {
+				// Do Nothing
+			}
+			if (showing) {
+				beepAndShowOnGuiThread();
+			}
 		}
-  	  }
-  	 );
+	}
 
-  	 snoozeTextField.addActionListener(
-  	   new ActionListener() {
+	private void beepAndShowOnGuiThread() {
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				Toolkit.getDefaultToolkit().beep();
+				setVisible(true);
+			}
+		});
+	}
 
-		public void actionPerformed(ActionEvent arg0) {
-	      snoozeDuration =(long)( Double.parseDouble( snoozeTextField.getText() ) * 1000 * 60 );
-	      snoozeClicked();
-		}
-  	   	
-  	   }
-  	 );
-  	 
-    setDefaultCloseOperation( EXIT_ON_CLOSE );
-    Dimension max = getMaximumSize();
-    setBounds( 0, 0, max.width, max.height );
-    show();
-    showing = true;
-    irritate();
-  }
+	protected void snoozeClicked() {
+		setVisible(false);
+		showing = false;
+		waitToShow();
+	}
 
-  private void irritate() {
-  	while( showing ) {
-  		final int oneMinute = 60 * 1000;
-  		try {
-			Thread.sleep( oneMinute );
-		} catch (InterruptedException e) {
-			// Do Nothing
-		}
-  		if(showing){
-  			show();
-  		}
-  	}
-  }
+	private void waitToShow() {
+		new Thread() {
 
-  protected void snoozeClicked() {
-  	hide();
-  	showing = false;
-  	boolean snoozedByUser = true;
-  	waitToShow();
-  }
+			public void run() {
+				try {
+					Thread.sleep(snoozeDuration);
 
-  private void waitToShow() {
-  	new Thread() {
-  		
-  		public void run() {
-  			try {
-  				Thread.sleep( snoozeDuration );
-  				
-  				
-  				// Beep
-  				Toolkit.getDefaultToolkit().beep();     			
-  				
-  				show();
-  				showing = true;
-  				
-  				irritate();
-  				
-  				
-  			} catch (InterruptedException e) {
-  				// Do nothing, don't care if interrupted.
-  			}
-  		}
-  	}.start();
-  }
+					beepAndShowOnGuiThread();
+
+					showing = true;
+
+					irritate();
+
+				} catch (InterruptedException e) {
+					// Do nothing, don't care if interrupted.
+				}
+			}
+
+		}.start();
+	}
 }
