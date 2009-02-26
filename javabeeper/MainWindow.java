@@ -10,10 +10,13 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
+import javax.swing.UIManager;
 
 public class MainWindow extends JFrame implements SnoozeObserver {
 
@@ -26,12 +29,15 @@ public class MainWindow extends JFrame implements SnoozeObserver {
 	private SnoozeController controller;
 
 	private void setupWidgets() {
+		setEnterAsActionForButtons();
+
 		setTitle("Restart timer");
 		getContentPane().add(panel1, BorderLayout.NORTH);
 		panel1.setLayout(new GridLayout(2, 2));
 		panel1.add(snoozeButton);
 		panel1.add(snoozeTimeMinutes);
-		panel1.add(new JTextField("You can put an arbitrary label here."));
+		JTextField arbitraryLabel = new JTextField("You can put an arbitrary label here.");
+		panel1.add(arbitraryLabel);
 
 		ActionListener snoozeActionListener = new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -41,11 +47,21 @@ public class MainWindow extends JFrame implements SnoozeObserver {
 
 		snoozeButton.addActionListener(snoozeActionListener);
 		snoozeTimeMinutes.addActionListener(snoozeActionListener);
+		arbitraryLabel.addActionListener(snoozeActionListener);
 
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		Dimension max = getMaximumSize();
 		setBounds(0, 0, max.width, max.height);
 		setVisible(true);
+	}
+
+	private void setEnterAsActionForButtons() {
+		InputMap im = (InputMap) UIManager.getDefaults().get("Button.focusInputMap");
+        Object pressedAction = im.get(KeyStroke.getKeyStroke("pressed SPACE"));
+        Object releasedAction = im.get(KeyStroke.getKeyStroke("released SPACE"));
+
+        im.put(KeyStroke.getKeyStroke("pressed ENTER"), pressedAction);
+        im.put(KeyStroke.getKeyStroke("released ENTER"), releasedAction);
 	}
 
 	public MainWindow(SnoozeController paramController) {
