@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jardesc>
+    <jar path="D:/Randall/Now/Desktop/JavaBeeper/Beeper.jar"/>
+    <options buildIfNeeded="true" compress="true"
+        descriptionLocation="/JavaBeeper/jarfile.jardesc"
+        exportErrors="true" exportWarnings="true" overwrite="false"
+        saveDescription="true" useSourceFolders="false"/>
+    <manifest generateManifest="true"
+        mainClassHandleIdentifier="=JavaBeeper/&lt;javabeeper{MainWindow.java[MainWindow"
+        manifestLocation="" manifestVersion="1.0" reuseManifest="false"
+        saveManifest="false" usesManifest="true">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="false">
+        <javaElement handleIdentifier="=JavaBeeper/&lt;javabeeper"/>
+    </selectedElements>
+</jardesc>
