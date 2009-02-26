@@ -19,100 +19,43 @@ public class MainWindow extends JFrame {
 
 	private static final long serialVersionUID = 3261204676180469008L;
 
-	public static void main(String args[]) {
-		new MainWindow();
-	}
-
-	protected long snoozeDuration = 20 * 1000 * 60; // Twenty minutes.
 	JButton snoozeButton = new JButton("Snooze");
 	JPanel panel1 = new JPanel();
-	JTextField snoozeTextField = new JTextField("20");
-	private boolean showing = true;
+	JTextField snoozeTimeMinutes = new JTextField("20");
 
-	private void setSnoozeDurationFromGui() {
-		snoozeDuration = (long) (Double
-				.parseDouble(snoozeTextField.getText()) * 1000 * 60);
-	}
-	
-	
-	public MainWindow() {
-		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
+	private SnoozeController controller;
 
-				getContentPane().add(panel1, BorderLayout.NORTH);
-				panel1.setLayout(new GridLayout(1, 2));
-				panel1.add(snoozeButton);
-				panel1.add(snoozeTextField);
-				
-				ActionListener snoozeActionListener = new ActionListener() {
+	private void setupWidgets() {
+		getContentPane().add(panel1, BorderLayout.NORTH);
+		panel1.setLayout(new GridLayout(2, 2));
+		panel1.add(snoozeButton);
+		panel1.add(snoozeTimeMinutes);
+		panel1.add(new JTextField("You can put an arbitrary lable here."));
 
-					public void actionPerformed(ActionEvent arg0) {
-						setSnoozeDurationFromGui();
-						snoozeClicked();
-					}
-				}; 
-
-				snoozeButton.addActionListener(snoozeActionListener);
-
-				snoozeTextField.addActionListener(snoozeActionListener);
-
-				setDefaultCloseOperation(EXIT_ON_CLOSE);
-				Dimension max = getMaximumSize();
-				setBounds(0, 0, max.width, max.height);
-				setVisible(true);
-				showing = true;
+		ActionListener snoozeActionListener = new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				controller.snoozeActionTriggered(Double.parseDouble(snoozeTimeMinutes.getText()));
 			}
-		});
-		irritate();
+		};
+
+		snoozeButton.addActionListener(snoozeActionListener);
+		snoozeTimeMinutes.addActionListener(snoozeActionListener);
+
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		Dimension max = getMaximumSize();
+		setBounds(0, 0, max.width, max.height);
+		setVisible(true);
 	}
 
-	private void irritate() {
-		while (showing) {
-			final int oneMinute = 60 * 1000;
-			try {
-				Thread.sleep(oneMinute);
-			} catch (InterruptedException e) {
-				// Do Nothing
-			}
-			if (showing) {
-				beepAndShowOnGuiThread();
-			}
-		}
+	public MainWindow(SnoozeController paramController) {
+		controller = paramController;
+		setupWidgets();
 	}
 
-	private void beepAndShowOnGuiThread() {
-		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				Toolkit.getDefaultToolkit().beep();
-				setVisible(true);
-			}
-		});
+	void beepAndShow() {
+		Toolkit.getDefaultToolkit().beep();
+		setVisible(true);
 	}
 
-	protected void snoozeClicked() {
-		setVisible(false);
-		showing = false;
-		waitToShow();
-	}
 
-	private void waitToShow() {
-		new Thread() {
-
-			public void run() {
-				try {
-					Thread.sleep(snoozeDuration);
-
-					beepAndShowOnGuiThread();
-
-					showing = true;
-
-					irritate();
-
-				} catch (InterruptedException e) {
-					// Do nothing, don't care if interrupted.
-				}
-			}
-
-		}.start();
-	}
 }
