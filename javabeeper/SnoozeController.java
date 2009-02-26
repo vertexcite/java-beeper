@@ -15,8 +15,8 @@ public class SnoozeController {
 		final SnoozeController controller = new SnoozeController();
 		javax.swing.SwingUtilities.invokeAndWait(new Runnable() {
 			public void run() {
-				controller.addObserver(controller.mainWindow = new MainWindow(controller));
 				controller.addObserver(controller.monitorWindow = new MonitorWindow(controller));
+				controller.addObserver(controller.mainWindow = new MainWindow(controller));
 			}
 		});
 		controller.heartBeatLoop();
@@ -46,7 +46,7 @@ public class SnoozeController {
 
 	private long nextWakeTimeMilliseconds = System.currentTimeMillis() + fromMinutesToMilliseconds(20);
 	private boolean snoozing = false;
-	private long nextIrritateTimeMilliseconds = 0;
+	private long nextIrritateTimeMilliseconds = System.currentTimeMillis() + fromMinutesToMilliseconds(1);
 	private double snoozeDurationMinutes = 20;
 
 	public synchronized double getSnoozeDurationMinutes() {
