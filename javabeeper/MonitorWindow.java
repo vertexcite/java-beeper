@@ -2,35 +2,37 @@ package javabeeper;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-class MonitorWindow extends JFrame{
+class MonitorWindow extends JFrame implements SnoozeObserver {
 
 	private SnoozeController snoozeController;
 	JPanel panel1 = new JPanel();
 	JTextField resetSnoozeDelayTime = new JTextField("20");
-	private JTextField timeRemaining = new JTextField("20");
+	private JTextArea timeRemaining = new JTextArea("00:20:00");
 
 	private void setupWidgets() {
+		timeRemaining.setFont(new Font("Serif", Font.BOLD, 72));
 		getContentPane().add(panel1, BorderLayout.NORTH);
 		panel1.setLayout(new GridLayout(2, 2));
 		panel1.add(resetSnoozeDelayTime);
 		panel1.add(timeRemaining);
 		timeRemaining.setEditable(false);
-		
+
 		ActionListener snoozeActionListener = new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
 				snoozeController.setSnoozeDurationFromGui(Double.parseDouble(resetSnoozeDelayTime.getText()));
 			}
-		}; 
-
+		};
 
 		resetSnoozeDelayTime.addActionListener(snoozeActionListener);
 
@@ -43,7 +45,7 @@ class MonitorWindow extends JFrame{
 	public MonitorWindow(SnoozeController paramSnoozeController) {
 		snoozeController = paramSnoozeController;
 		setupWidgets();
-		
+
 	}
 
 	private static final long serialVersionUID = -3301563184699815704L;
@@ -54,13 +56,19 @@ class MonitorWindow extends JFrame{
 	}
 
 	private String minutesAsTimeStringHHMMSS(double paramMinutesRemaining) {
-		
-		int hoursDigits = (int)paramMinutesRemaining / 60;
-		int wholeMinutes = (int)paramMinutesRemaining;
+
+		int hoursDigits = (int) paramMinutesRemaining / 60;
+		int wholeMinutes = (int) paramMinutesRemaining;
 		int minutesDigits = wholeMinutes - hoursDigits * 60;
-		int secondsDigits = (int)((paramMinutesRemaining - wholeMinutes)*60);
+		int secondsDigits = (int) ((paramMinutesRemaining - wholeMinutes) * 60);
 		String timeStringHHMMSS = String.format("%02d:%02d:%02d", hoursDigits, minutesDigits, secondsDigits);
-		return timeStringHHMMSS ;
+		return timeStringHHMMSS;
 	}
 
-}	
+	@Override
+	public void setSnoozeDuration(double snoozeDurationMinutes) {
+		resetSnoozeDelayTime.setText(Double.toString(snoozeDurationMinutes));
+		repaint();
+	}
+
+}

@@ -15,7 +15,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class MainWindow extends JFrame {
+public class MainWindow extends JFrame implements SnoozeObserver {
 
 	private static final long serialVersionUID = 3261204676180469008L;
 
@@ -57,5 +57,9 @@ public class MainWindow extends JFrame {
 		setVisible(true);
 	}
 
+	@Override
+	public void setSnoozeDuration(double snoozeDurationMinutes) {
+		snoozeTimeMinutes.setText(Double.toString(snoozeDurationMinutes));
+	}
 
 }
