@@ -73,9 +73,8 @@ public class SnoozeController {
 				// Do Nothing
 			}
 
-			if (isSnoozing()) {
-				updateRemainingTimeDisplay();
-			}
+			updateRemainingTimeDisplay();
+			
 			if (shouldIrritate()) {
 				showAlert();
 				updateNextIrritateTime();
