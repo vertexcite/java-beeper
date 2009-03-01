@@ -8,9 +8,15 @@ public class SnoozeController {
 	private static final int HEART_BEAT_PERIOD_MILLISECONDS = 1000;
 	private static final int MILLISECONDS_PER_SECOND = 1000;
 	private static final int SECONDS_PER_MINUTE = 60;
+	
 	private MainWindow mainWindow;
 	private MonitorWindow monitorWindow;
 	private List<SnoozeObserver> observers = new ArrayList<SnoozeObserver>();
+
+	private long nextWakeTimeMilliseconds = System.currentTimeMillis();
+	private boolean snoozing = false;
+	private long nextIrritateTimeMilliseconds = System.currentTimeMillis() + fromMinutesToMilliseconds(1);
+	private double snoozeDurationMinutes = 20;
 
 	public static void main(String args[]) throws Exception {
 		final SnoozeController controller = new SnoozeController();
@@ -45,10 +51,6 @@ public class SnoozeController {
 		}
 	}
 
-	private long nextWakeTimeMilliseconds = System.currentTimeMillis() + fromMinutesToMilliseconds(20);
-	private boolean snoozing = false;
-	private long nextIrritateTimeMilliseconds = System.currentTimeMillis() + fromMinutesToMilliseconds(1);
-	private double snoozeDurationMinutes = 20;
 
 	public synchronized double getSnoozeDurationMinutes() {
 		return snoozeDurationMinutes;
@@ -124,12 +126,8 @@ public class SnoozeController {
 		return System.currentTimeMillis() > timePointMilliseconds;
 	}
 
-	private boolean isSnoozing() {
-		return snoozing;
-	}
-
 	private boolean timeToShowAlert() {
-		// Heartbeats only once every second, so go now rather than come in late.
+		// Heart beats only once every second, so go now rather than come in late.
 		long timePointMilliseconds = nextWakeTimeMilliseconds - HEART_BEAT_PERIOD_MILLISECONDS; 
 		return snoozing && hasPassedTimePoint(timePointMilliseconds);
 	}

@@ -17,7 +17,7 @@ public class MonitorWindow extends JFrame implements SnoozeObserver {
 	private SnoozeController snoozeController;
 	private JPanel panel1 = new JPanel();
 	private JTextField resetSnoozeDelayTime = new JTextField("20");
-	private JTextArea timeRemaining = new JTextArea(minutesAsTimeStringHHMMSS(20));
+	private JTextArea timeRemaining = new JTextArea(minutesAsTimeStringHHMMSS(0));
 
 	private void setupWidgets() {
 		setTitle("Java Beeper");
@@ -59,10 +59,11 @@ public class MonitorWindow extends JFrame implements SnoozeObserver {
 
 	private String minutesAsTimeStringHHMMSS(double paramMinutesRemaining) {
 		String signString = "";
+		double absMinutesRemaining = Math.abs(paramMinutesRemaining);
 		if(paramMinutesRemaining < 0) {
 			signString = "-";
+			absMinutesRemaining += 1.0/60.0; // Since truncation will be towards zero.
 		}
-		double absMinutesRemaining = Math.abs(paramMinutesRemaining);
 		int hoursDigits = (int) absMinutesRemaining / 60;
 		int wholeMinutes = (int) absMinutesRemaining;
 		int minutesDigits = wholeMinutes - hoursDigits * 60;
