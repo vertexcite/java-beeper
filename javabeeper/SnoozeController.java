@@ -5,6 +5,7 @@ import java.util.List;
 
 public class SnoozeController {
 
+	private static final int HEART_BEAT_PERIOD_MILLISECONDS = 1000;
 	private static final int MILLISECONDS_PER_SECOND = 1000;
 	private static final int SECONDS_PER_MINUTE = 60;
 	private MainWindow mainWindow;
@@ -36,7 +37,7 @@ public class SnoozeController {
 		snoozing = true;
 		hideAlert();
 		setSnoozeDurationFromGui(paramSnoozeDurationMinutes);
-}
+	}
 
 	private void updateObservers() {
 		for (SnoozeObserver observer : observers) {
@@ -59,12 +60,14 @@ public class SnoozeController {
 	 * "Irritates", i.e. re-shows alert every minute if it was not "snoozed"
 	 */
 	private void heartBeatLoop() {
-		final long heartBeatPeriodMilliseconds = 1000;
 		long nextHeartBeatTime = System.currentTimeMillis();
 		while (true) {
 			try {
-				nextHeartBeatTime = nextHeartBeatTime + heartBeatPeriodMilliseconds;
-				long heartBeatSleepDurationMilliseconds = nextHeartBeatTime - System.currentTimeMillis();
+				long heartBeatSleepDurationMilliseconds;
+				do {
+					nextHeartBeatTime = nextHeartBeatTime + HEART_BEAT_PERIOD_MILLISECONDS;
+					heartBeatSleepDurationMilliseconds = nextHeartBeatTime - System.currentTimeMillis();
+				} while (heartBeatSleepDurationMilliseconds < 0); // If for e.g. system is suspended, this loop may not get to execute every heartbeat.
 				Thread.sleep(heartBeatSleepDurationMilliseconds);
 			} catch (InterruptedException e) {
 				// Do Nothing
@@ -127,7 +130,8 @@ public class SnoozeController {
 	}
 
 	private boolean timeToShowAlert() {
-		long timePointMilliseconds = nextWakeTimeMilliseconds - 1000; // Heartbeats only once every second, so go now rather than come in late.
+		// Heartbeats only once every second, so go now rather than come in late.
+		long timePointMilliseconds = nextWakeTimeMilliseconds - HEART_BEAT_PERIOD_MILLISECONDS; 
 		return snoozing && hasPassedTimePoint(timePointMilliseconds);
 	}
 
