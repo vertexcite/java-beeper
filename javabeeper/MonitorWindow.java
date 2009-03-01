@@ -58,12 +58,16 @@ public class MonitorWindow extends JFrame implements SnoozeObserver {
 	}
 
 	private String minutesAsTimeStringHHMMSS(double paramMinutesRemaining) {
-
-		int hoursDigits = (int) paramMinutesRemaining / 60;
-		int wholeMinutes = (int) paramMinutesRemaining;
+		String signString = "";
+		if(paramMinutesRemaining < 0) {
+			signString = "-";
+		}
+		double absMinutesRemaining = Math.abs(paramMinutesRemaining);
+		int hoursDigits = (int) absMinutesRemaining / 60;
+		int wholeMinutes = (int) absMinutesRemaining;
 		int minutesDigits = wholeMinutes - hoursDigits * 60;
-		int secondsDigits = (int) ((paramMinutesRemaining - wholeMinutes) * 60);
-		String timeStringHHMMSS = String.format("%02d:%02d:%02d", hoursDigits, minutesDigits, secondsDigits);
+		int secondsDigits = (int) ((absMinutesRemaining - wholeMinutes) * 60);
+		String timeStringHHMMSS = String.format("%s%02d:%02d:%02d", signString, hoursDigits, minutesDigits, secondsDigits);
 		return timeStringHHMMSS;
 	}
 
