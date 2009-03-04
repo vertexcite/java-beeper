@@ -18,12 +18,13 @@ public class MonitorWindow extends JFrame implements SnoozeObserver {
 	private JPanel panel1 = new JPanel();
 	private JTextField resetSnoozeDelayTime = new JTextField("20");
 	private JTextArea timeRemaining = new JTextArea(minutesAsTimeStringHHMMSS(0));
+	private JTextArea versionLabel = new JTextArea(SnoozeController.versionString);
 
 	private void setupWidgets() {
 		setTitle("Java Beeper");
 		timeRemaining.setFont(new Font("Serif", Font.BOLD, 72));
 		getContentPane().add(panel1, BorderLayout.NORTH);
-		panel1.setLayout(new GridLayout(2, 2));
+		panel1.setLayout(new GridLayout(3, 1));
 		panel1.add(resetSnoozeDelayTime);
 		panel1.add(timeRemaining);
 		timeRemaining.setEditable(false);
@@ -37,6 +38,9 @@ public class MonitorWindow extends JFrame implements SnoozeObserver {
 
 		resetSnoozeDelayTime.addActionListener(snoozeActionListener);
 
+		panel1.add(versionLabel);
+		versionLabel.setEditable(false);
+		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		Dimension max = getMaximumSize();
 		setBounds(0, 0, max.width, max.height);
