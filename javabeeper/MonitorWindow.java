@@ -31,7 +31,7 @@ public class MonitorWindow extends JFrame implements SnoozeObserver {
 		ActionListener snoozeActionListener = new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
-				snoozeController.setSnoozeDurationFromGui(Double.parseDouble(resetSnoozeDelayTime.getText()));
+				snoozeController.restartSnoozing(Double.parseDouble(resetSnoozeDelayTime.getText()));
 			}
 		};
 

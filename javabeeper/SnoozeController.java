@@ -33,16 +33,20 @@ public class SnoozeController {
 		observers.add(observer);
 	}
 
-	public synchronized void setSnoozeDurationFromGui(final double paramSnoozeDurationMinutes) {
+	public synchronized void setSnoozeDurationMinutes(final double paramSnoozeDurationMinutes) {
 		nextWakeTimeMilliseconds = System.currentTimeMillis() + fromMinutesToMilliseconds(paramSnoozeDurationMinutes);
 		snoozeDurationMinutes = paramSnoozeDurationMinutes;
 		updateObservers();
 	}
 
-	public synchronized void startSnoozing(final double paramSnoozeDurationMinutes) {
+	/**
+	 * Either start snoozing, or if already snoozing, continue, but reset snooze time.
+	 * @param paramSnoozeDurationMinutes Amount of time to snooze for.
+	 */
+	public synchronized void restartSnoozing(final double paramSnoozeDurationMinutes) {
 		snoozing = true;
 		hideAlert();
-		setSnoozeDurationFromGui(paramSnoozeDurationMinutes);
+		setSnoozeDurationMinutes(paramSnoozeDurationMinutes);
 	}
 
 	private void updateObservers() {

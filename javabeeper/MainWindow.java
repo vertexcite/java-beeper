@@ -41,7 +41,7 @@ public class MainWindow extends JFrame implements SnoozeObserver {
 
 		ActionListener snoozeActionListener = new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				controller.startSnoozing(Double.parseDouble(snoozeTimeMinutes.getText()));
+				controller.restartSnoozing(Double.parseDouble(snoozeTimeMinutes.getText()));
 			}
 		};
 
