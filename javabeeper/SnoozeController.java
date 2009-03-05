@@ -10,6 +10,11 @@ public class SnoozeController {
 	private static final int SECONDS_PER_MINUTE = 60;
 	public static final String versionString = "Version 0.11 (zero point eleven)";
 	
+	/**
+	 * Small offset for time calculation to help alleviate rounding when converting from milliseconds to time display.
+	 */
+	private static final long EPSILON_MILLISECONDS = 1;
+	
 	private MainWindow mainWindow;
 	private MonitorWindow monitorWindow;
 	private List<SnoozeObserver> observers = new ArrayList<SnoozeObserver>();
@@ -48,6 +53,7 @@ public class SnoozeController {
 		snoozing = true;
 		hideAlert();
 		setSnoozeDurationMinutes(paramSnoozeDurationMinutes);
+		updateRemainingTimeDisplay();
 	}
 
 	private void updateObservers() {
@@ -116,7 +122,7 @@ public class SnoozeController {
 
 	private void updateRemainingTimeDisplay() {
 		long timeNow = System.currentTimeMillis();
-		final double minutesRemaining = fromMillisecondsToMinutes(nextWakeTimeMilliseconds - timeNow);
+		final double minutesRemaining = fromMillisecondsToMinutes(nextWakeTimeMilliseconds - timeNow + EPSILON_MILLISECONDS);
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				monitorWindow.setTimeRemainingDisplay(minutesRemaining);
