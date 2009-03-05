@@ -8,7 +8,7 @@ public class SnoozeController {
 	private static final int HEART_BEAT_PERIOD_MILLISECONDS = 1000;
 	private static final int MILLISECONDS_PER_SECOND = 1000;
 	private static final int SECONDS_PER_MINUTE = 60;
-	public static final String versionString = "Version 0.11 (zero point eleven)";
+	public static final String versionString = "Version 0.12 (zero point twelve)";
 	
 	/**
 	 * Small offset for time calculation to help alleviate rounding when converting from milliseconds to time display.
