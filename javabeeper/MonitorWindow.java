@@ -58,7 +58,7 @@ public class MonitorWindow extends JFrame implements SnoozeObserver {
 	public void setTimeRemainingDisplay(double paramMinutesRemaining) {
 		String timeStringHHMMSS = minutesAsTimeStringHHMMSS(paramMinutesRemaining);
 		timeRemaining.setText(timeStringHHMMSS);
-		setTitle("Java Beeper: " + timeStringHHMMSS);
+		setTitle(timeStringHHMMSS + "  Java Beeper" );
 	}
 
 	private String minutesAsTimeStringHHMMSS(double paramMinutesRemaining) {
