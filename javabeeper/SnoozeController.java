@@ -6,8 +6,6 @@ import java.util.List;
 public class SnoozeController {
 
 	private static final int HEART_BEAT_PERIOD_MILLISECONDS = 1000;
-	private static final int MILLISECONDS_PER_SECOND = 1000;
-	private static final int SECONDS_PER_MINUTE = 60;
 	public static final String versionString = "Version 0.13 (zero point thirteen)";
 	
 	/**
@@ -21,10 +19,10 @@ public class SnoozeController {
 
 	private long nextWakeTimeMilliseconds = System.currentTimeMillis();
 	private boolean snoozing = false;
-	private long nextIrritateTimeMilliseconds = System.currentTimeMillis() + fromMinutesToMilliseconds(1);
+	private long nextIrritateTimeMilliseconds = System.currentTimeMillis() + Utilities.fromMinutesToMilliseconds(1);
 	private double snoozeDurationMinutes = 20;
-	private boolean resynchRequired = false;
-	private long resynchReferenceTime;
+	private long resynchReferenceTime = -1;
+	private Thread heartBeatThread;
 
 	public static void main(String args[]) throws Exception {
 		final SnoozeController controller = new SnoozeController();
@@ -43,10 +41,9 @@ public class SnoozeController {
 
 	public synchronized void setSnoozeDurationMinutes(final double paramSnoozeDurationMinutes) {
 		long currentTimeMilliseconds = System.currentTimeMillis();
-		nextWakeTimeMilliseconds = currentTimeMilliseconds + fromMinutesToMilliseconds(paramSnoozeDurationMinutes);
+		nextWakeTimeMilliseconds = currentTimeMilliseconds + Utilities.fromMinutesToMilliseconds(paramSnoozeDurationMinutes);
 
-		resynchReferenceTime = currentTimeMilliseconds;
-		setResynchRequired(true);
+		flagResynchRequired(currentTimeMilliseconds);
 
 		snoozeDurationMinutes = paramSnoozeDurationMinutes;
 		updateObservers();
@@ -81,6 +78,7 @@ public class SnoozeController {
 	 * "Irritates", i.e. re-shows alert every minute if it was not "snoozed"
 	 */
 	private void heartBeatLoop() {
+		heartBeatThread = Thread.currentThread();
 		int heartBeatIndex = 0;
 		long nextHeartBeatTime = System.currentTimeMillis();
 		while (true) {
@@ -93,17 +91,16 @@ public class SnoozeController {
 					heartBeatSleepDurationMilliseconds = nextHeartBeatTime - System.currentTimeMillis();
 				}  
 
-				System.out.println("B: " + heartBeatIndex + ": \n" + System.currentTimeMillis() + "\n" + nextHeartBeatTime +"\n\n");
+				System.out.println("B: " + heartBeatIndex + ": \n" + System.currentTimeMillis() + "\n" + nextHeartBeatTime );
 
 				Thread.sleep(heartBeatSleepDurationMilliseconds);
 				heartBeatIndex++;
 
-				System.out.println("A: " + heartBeatIndex + ": \n" + System.currentTimeMillis() + "\n" + nextHeartBeatTime +"\n\n\n\n");
+				System.out.println("A: " + heartBeatIndex + ": \n" + System.currentTimeMillis() + "\n" + nextHeartBeatTime + "\n\n\n");
 				
-				if(getResynchRequired()){
-					nextHeartBeatTime = resynchReferenceTime + HEART_BEAT_PERIOD_MILLISECONDS;
-					// TODO: It would be nicer if testing whether a resynch is required and reading the resynch tie were in the same synchronized block.
-					setResynchRequired(false);
+				long localResynchReferenceTime = readAndClearResynchReference();
+				if(localResynchReferenceTime > 0){
+					nextHeartBeatTime = localResynchReferenceTime + HEART_BEAT_PERIOD_MILLISECONDS;
 				}
 			} catch (InterruptedException e) {
 				// Do Nothing
@@ -123,16 +120,23 @@ public class SnoozeController {
 		}
 	}
 
-	private synchronized boolean getResynchRequired() {
-		return resynchRequired;
+	/**
+	 * Reads and resets reference time from which heart beat period should be equi-spaced.
+	 * @return time from which heart beat period should be spaced, or -1 if no change is necessary.
+	 */
+	private synchronized long readAndClearResynchReference() {
+		long returnValue = resynchReferenceTime;
+		resynchReferenceTime = -1;
+		return returnValue;
 	}
 
-	private synchronized void setResynchRequired(boolean paramResynchRequired) {
-		resynchRequired  = paramResynchRequired;
+	private synchronized void flagResynchRequired(long currentTimeMilliseconds) {
+		resynchReferenceTime = currentTimeMilliseconds;
+		heartBeatThread.interrupt();
 	}
 
 	private void updateNextIrritateTime() {
-		nextIrritateTimeMilliseconds = System.currentTimeMillis() + MILLISECONDS_PER_SECOND + fromMinutesToMilliseconds(1);
+		nextIrritateTimeMilliseconds = System.currentTimeMillis() + Utilities.MILLISECONDS_PER_SECOND + Utilities.fromMinutesToMilliseconds(1);
 	}
 
 	private void showAlert() {
@@ -153,12 +157,13 @@ public class SnoozeController {
 
 	private void updateRemainingTimeDisplay() {
 		long timeNow = System.currentTimeMillis();
-		final double minutesRemaining = fromMillisecondsToMinutes(nextWakeTimeMilliseconds - timeNow + EPSILON_MILLISECONDS);
+		final double minutesRemaining = Utilities.fromMillisecondsToMinutes(nextWakeTimeMilliseconds - timeNow + EPSILON_MILLISECONDS);
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				monitorWindow.setTimeRemainingDisplay(minutesRemaining);
 			}
 		});
+		System.out.println(Utilities.minutesAsTimeStringHHMMSS(minutesRemaining));
 	}
 
 	private boolean shouldIrritate() {
@@ -170,18 +175,9 @@ public class SnoozeController {
 	}
 
 	private synchronized boolean timeToShowAlert() {
-		long timePointMilliseconds = nextWakeTimeMilliseconds - HEART_BEAT_PERIOD_MILLISECONDS; 
+		long timePointMilliseconds = nextWakeTimeMilliseconds - HEART_BEAT_PERIOD_MILLISECONDS/2; 
 		// Heart beats only once every second, so go now rather than come in late.
 		return snoozing && hasPassedTimePoint(timePointMilliseconds);
-	}
-
-	private static long fromMinutesToMilliseconds(final double durationMinutes) {
-		double durationMilliseconds = durationMinutes * MILLISECONDS_PER_SECOND * SECONDS_PER_MINUTE;
-		return (long) durationMilliseconds;
-	}
-
-	private double fromMillisecondsToMinutes(long durationMilliseconds) {
-		return ((double) durationMilliseconds) / (MILLISECONDS_PER_SECOND * SECONDS_PER_MINUTE);
 	}
 
 }
