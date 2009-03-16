@@ -5,7 +5,7 @@ import java.util.List;
 
 public class SnoozeController {
 
-	private static final int HEART_BEAT_PERIOD_MILLISECONDS = 2000;
+	private static final int HEART_BEAT_PERIOD_MILLISECONDS = 1000;
 	private static final int MILLISECONDS_PER_SECOND = 1000;
 	private static final int SECONDS_PER_MINUTE = 60;
 	public static final String versionString = "Version 0.13 (zero point thirteen)";
@@ -61,6 +61,7 @@ public class SnoozeController {
 		hideAlert();
 		setSnoozeDurationMinutes(paramSnoozeDurationMinutes);
 		updateRemainingTimeDisplay();
+		System.out.println("Restarting");
 	}
 
 	private void updateObservers() {
@@ -80,24 +81,29 @@ public class SnoozeController {
 	 * "Irritates", i.e. re-shows alert every minute if it was not "snoozed"
 	 */
 	private void heartBeatLoop() {
+		int heartBeatIndex = 0;
 		long nextHeartBeatTime = System.currentTimeMillis();
 		while (true) {
 			try {
 				
 				long heartBeatSleepDurationMilliseconds = nextHeartBeatTime - System.currentTimeMillis();
-				while (heartBeatSleepDurationMilliseconds < 0) { 
+				while (heartBeatSleepDurationMilliseconds <= 0) { 
 					// If for e.g. system is suspended, the heartbeat loop may not get to execute every heartbeat.
 					nextHeartBeatTime = nextHeartBeatTime + HEART_BEAT_PERIOD_MILLISECONDS;
 					heartBeatSleepDurationMilliseconds = nextHeartBeatTime - System.currentTimeMillis();
 				}  
-				
+
+				System.out.println("B: " + heartBeatIndex + ": \n" + System.currentTimeMillis() + "\n" + nextHeartBeatTime +"\n\n");
+
 				Thread.sleep(heartBeatSleepDurationMilliseconds);
+				heartBeatIndex++;
+
+				System.out.println("A: " + heartBeatIndex + ": \n" + System.currentTimeMillis() + "\n" + nextHeartBeatTime +"\n\n\n\n");
 				
 				if(getResynchRequired()){
 					nextHeartBeatTime = resynchReferenceTime + HEART_BEAT_PERIOD_MILLISECONDS;
 					// TODO: It would be nicer if testing whether a resynch is required and reading the resynch tie were in the same synchronized block.
 					setResynchRequired(false);
-					continue;
 				}
 			} catch (InterruptedException e) {
 				// Do Nothing
