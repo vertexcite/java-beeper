@@ -58,7 +58,6 @@ public class SnoozeController {
 		hideAlert();
 		setSnoozeDurationMinutes(paramSnoozeDurationMinutes);
 		updateRemainingTimeDisplay();
-		System.out.println("Restarting");
 	}
 
 	private void updateObservers() {
@@ -91,13 +90,9 @@ public class SnoozeController {
 					heartBeatSleepDurationMilliseconds = nextHeartBeatTime - System.currentTimeMillis();
 				}  
 
-				System.out.println("B: " + heartBeatIndex + ": \n" + System.currentTimeMillis() + "\n" + nextHeartBeatTime );
-
 				Thread.sleep(heartBeatSleepDurationMilliseconds);
 				heartBeatIndex++;
 
-				System.out.println("A: " + heartBeatIndex + ": \n" + System.currentTimeMillis() + "\n" + nextHeartBeatTime + "\n\n\n");
-				
 				long localResynchReferenceTime = readAndClearResynchReference();
 				if(localResynchReferenceTime > 0){
 					nextHeartBeatTime = localResynchReferenceTime + HEART_BEAT_PERIOD_MILLISECONDS;
@@ -163,7 +158,6 @@ public class SnoozeController {
 				monitorWindow.setTimeRemainingDisplay(minutesRemaining);
 			}
 		});
-		System.out.println(Utilities.minutesAsTimeStringHHMMSS(minutesRemaining));
 	}
 
 	private boolean shouldIrritate() {
