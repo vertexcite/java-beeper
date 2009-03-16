@@ -17,7 +17,7 @@ public class MonitorWindow extends JFrame implements SnoozeObserver {
 	private SnoozeController snoozeController;
 	private JPanel panel1 = new JPanel();
 	private JTextField resetSnoozeDelayTime = new JTextField("20");
-	private JTextArea timeRemaining = new JTextArea(minutesAsTimeStringHHMMSS(0));
+	private JTextArea timeRemaining = new JTextArea(Utilities.minutesAsTimeStringHHMMSS(0));
 	private JTextArea versionLabel = new JTextArea(SnoozeController.versionString);
 
 	private void setupWidgets() {
@@ -56,24 +56,10 @@ public class MonitorWindow extends JFrame implements SnoozeObserver {
 	private static final long serialVersionUID = -3301563184699815704L;
 
 	public void setTimeRemainingDisplay(double paramMinutesRemaining) {
-		String timeStringHHMMSS = minutesAsTimeStringHHMMSS(paramMinutesRemaining);
+		String timeStringHHMMSS = Utilities.minutesAsTimeStringHHMMSS(paramMinutesRemaining);
 		timeRemaining.setText(timeStringHHMMSS);
 		setTitle(timeStringHHMMSS + "  Java Beeper" );
-	}
-
-	private String minutesAsTimeStringHHMMSS(double paramMinutesRemaining) {
-		String signString = "";
-		double absMinutesRemaining = Math.abs(paramMinutesRemaining);
-		if(paramMinutesRemaining < 0) {
-			signString = "-";
-			absMinutesRemaining += 1.0/60.0; // Since truncation will be towards zero.
-		}
-		int hoursDigits = (int) absMinutesRemaining / 60;
-		int wholeMinutes = (int) absMinutesRemaining;
-		int minutesDigits = wholeMinutes - hoursDigits * 60;
-		int secondsDigits = (int) ((absMinutesRemaining - wholeMinutes) * 60);
-		String timeStringHHMMSS = String.format("%s%02d:%02d:%02d", signString, hoursDigits, minutesDigits, secondsDigits);
-		return timeStringHHMMSS;
+		
 	}
 
 	@Override
