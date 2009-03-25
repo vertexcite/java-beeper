@@ -18,7 +18,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 
-public class MainWindow extends JFrame implements SnoozeObserver {
+public class AlertWindow extends JFrame implements SnoozeObserver {
 
 	private static final long serialVersionUID = 3261204676180469008L;
 
@@ -64,7 +64,7 @@ public class MainWindow extends JFrame implements SnoozeObserver {
         im.put(KeyStroke.getKeyStroke("released ENTER"), releasedAction);
 	}
 
-	public MainWindow(SnoozeController paramController) {
+	public AlertWindow(SnoozeController paramController) {
 		controller = paramController;
 		setupWidgets();
 	}

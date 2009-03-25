@@ -13,7 +13,7 @@ public class SnoozeController {
 	 */
 	private static final long EPSILON_MILLISECONDS = 1;
 	
-	private MainWindow mainWindow;
+	private AlertWindow mainWindow;
 	private MonitorWindow monitorWindow;
 	private List<SnoozeObserver> observers = new ArrayList<SnoozeObserver>();
 
@@ -29,7 +29,7 @@ public class SnoozeController {
 		javax.swing.SwingUtilities.invokeAndWait(new Runnable() {
 			public void run() {
 				controller.addObserver(controller.monitorWindow = new MonitorWindow(controller));
-				controller.addObserver(controller.mainWindow = new MainWindow(controller));
+				controller.addObserver(controller.mainWindow = new AlertWindow(controller));
 			}
 		});
 		controller.heartBeatLoop();
