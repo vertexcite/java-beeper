@@ -23,6 +23,7 @@ public class SnoozeController {
 	private double snoozeDurationMinutes = 20;
 	private long resynchReferenceTime = -1;
 	private Thread heartBeatThread;
+	private boolean soundEnabled = true;
 
 	public static void main(String args[]) throws Exception {
 		final SnoozeController controller = new SnoozeController();
@@ -172,6 +173,14 @@ public class SnoozeController {
 		long timePointMilliseconds = nextWakeTimeMilliseconds - HEART_BEAT_PERIOD_MILLISECONDS/2; 
 		// Heart beats only once every second, so go now rather than come in late.
 		return snoozing && hasPassedTimePoint(timePointMilliseconds);
+	}
+
+	public synchronized boolean isSoundEnabled() {
+		return soundEnabled;
+	}
+
+	public synchronized void setSoundEnabled(boolean paramSoundEnabled) {
+		soundEnabled  = paramSoundEnabled;
 	}
 
 }

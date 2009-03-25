@@ -7,6 +7,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -19,18 +20,31 @@ public class MonitorWindow extends JFrame implements SnoozeObserver {
 	private JTextField resetSnoozeDelayTime = new JTextField("20");
 	private JTextArea timeRemaining = new JTextArea(Utilities.minutesAsTimeStringHHMMSS(0));
 	private JTextArea versionLabel = new JTextArea(SnoozeController.versionString);
+	private JCheckBox soundEnabled = new JCheckBox("Enable audio");
 
 	private void setupWidgets() {
 		setTitle("Java Beeper");
 		timeRemaining.setFont(new Font("Serif", Font.BOLD, 72));
 		getContentPane().add(panel1, BorderLayout.NORTH);
-		panel1.setLayout(new GridLayout(3, 1));
+		panel1.setLayout(new GridLayout(4, 1));
 		panel1.add(resetSnoozeDelayTime);
 		panel1.add(timeRemaining);
+		panel1.add(soundEnabled);
+		soundEnabled.setSelected(true);
+		soundEnabled.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				snoozeController.setSoundEnabled(soundEnabled.isSelected());
+			}
+		
+		});
+		
 		timeRemaining.setEditable(false);
 
 		ActionListener snoozeActionListener = new ActionListener() {
 
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				snoozeController.restartSnoozing(Double.parseDouble(resetSnoozeDelayTime.getText()));
 			}

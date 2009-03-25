@@ -70,7 +70,9 @@ public class AlertWindow extends JFrame implements SnoozeObserver {
 	}
 
 	void beepAndShow() {
-		Toolkit.getDefaultToolkit().beep();
+		if(controller.isSoundEnabled()) {
+			Toolkit.getDefaultToolkit().beep();
+		}
 		setVisible(true);
 	}
 
