@@ -6,7 +6,7 @@ import java.util.List;
 public class SnoozeController {
 
 	private static final int HEART_BEAT_PERIOD_MILLISECONDS = 1000;
-	public static final String versionString = "Version 0.15 (zero point fifteen)";
+	public static final String versionString = "Version 0.16 (zero point sixteen)";
 	
 	/**
 	 * Small offset for time calculation to help alleviate rounding when converting from milliseconds to time display.
