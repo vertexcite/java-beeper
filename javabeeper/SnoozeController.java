@@ -57,6 +57,7 @@ public class SnoozeController {
 	public synchronized void restartSnoozing(final double paramSnoozeDurationMinutes) {
 		snoozing = true;
 		hideAlert();
+		setSoundEnabled(true);
 		setSnoozeDurationMinutes(paramSnoozeDurationMinutes);
 		updateRemainingTimeDisplay();
 	}
@@ -179,8 +180,15 @@ public class SnoozeController {
 		return soundEnabled;
 	}
 
-	public synchronized void setSoundEnabled(boolean paramSoundEnabled) {
+	public synchronized void setSoundEnabled(final boolean paramSoundEnabled) {
 		soundEnabled  = paramSoundEnabled;
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				for (SnoozeObserver observer : observers) {
+					observer.setSoundEnabled(paramSoundEnabled);
+				}
+			}
+		});
 	}
 
 }

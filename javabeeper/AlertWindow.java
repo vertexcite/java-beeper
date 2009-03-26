@@ -9,9 +9,11 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 
 import javax.swing.InputMap;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -25,8 +27,10 @@ public class AlertWindow extends JFrame implements SnoozeObserver {
 	JButton snoozeButton = new JButton("Snooze");
 	JPanel panel1 = new JPanel();
 	JTextField snoozeTimeMinutes = new JTextField("20");
+	private JCheckBox soundEnabled = new JCheckBox("Enable audio (note: snooze automatically enables audio)");
 
-	private SnoozeController controller;
+
+	private SnoozeController snoozeController;
 
 	private void setupWidgets() {
 		setEnterAsActionForButtons();
@@ -38,10 +42,14 @@ public class AlertWindow extends JFrame implements SnoozeObserver {
 		panel1.add(snoozeTimeMinutes);
 		JTextField arbitraryLabel = new JTextField("You can put an arbitrary label here.");
 		panel1.add(arbitraryLabel);
+		panel1.add(soundEnabled);
+		soundEnabled.setSelected(true);
+		soundEnabled.setMnemonic(KeyEvent.VK_A);
+		soundEnabled.addActionListener(new EnableAudioCheckBoxActionListener(snoozeController, soundEnabled));
 
 		ActionListener snoozeActionListener = new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				controller.restartSnoozing(Double.parseDouble(snoozeTimeMinutes.getText()));
+				snoozeController.restartSnoozing(Double.parseDouble(snoozeTimeMinutes.getText()));
 			}
 		};
 
@@ -65,12 +73,12 @@ public class AlertWindow extends JFrame implements SnoozeObserver {
 	}
 
 	public AlertWindow(SnoozeController paramController) {
-		controller = paramController;
+		snoozeController = paramController;
 		setupWidgets();
 	}
 
 	void beepAndShow() {
-		if(controller.isSoundEnabled()) {
+		if(snoozeController.isSoundEnabled()) {
 			Toolkit.getDefaultToolkit().beep();
 		}
 		setVisible(true);
@@ -79,6 +87,12 @@ public class AlertWindow extends JFrame implements SnoozeObserver {
 	@Override
 	public void setSnoozeDuration(double snoozeDurationMinutes) {
 		snoozeTimeMinutes.setText(Double.toString(snoozeDurationMinutes));
+	}
+
+	@Override
+	public void setSoundEnabled(boolean soundEnabled) {
+		this.soundEnabled.setSelected(soundEnabled);
+		
 	}
 
 }

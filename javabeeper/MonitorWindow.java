@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -20,7 +21,8 @@ public class MonitorWindow extends JFrame implements SnoozeObserver {
 	private JTextField resetSnoozeDelayTime = new JTextField("20");
 	private JTextArea timeRemaining = new JTextArea(Utilities.minutesAsTimeStringHHMMSS(0));
 	private JTextArea versionLabel = new JTextArea(SnoozeController.versionString);
-	private JCheckBox soundEnabled = new JCheckBox("Enable audio");
+	// TODO: Nicer to use resources for strings (e.g. when translating).
+	private JCheckBox soundEnabled = new JCheckBox("Enable audio (note: snooze automatically enables audio)");
 
 	private void setupWidgets() {
 		setTitle("Java Beeper");
@@ -31,14 +33,8 @@ public class MonitorWindow extends JFrame implements SnoozeObserver {
 		panel1.add(timeRemaining);
 		panel1.add(soundEnabled);
 		soundEnabled.setSelected(true);
-		soundEnabled.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				snoozeController.setSoundEnabled(soundEnabled.isSelected());
-			}
-		
-		});
+		soundEnabled.setMnemonic(KeyEvent.VK_A);
+		soundEnabled.addActionListener(new EnableAudioCheckBoxActionListener(snoozeController, soundEnabled));
 		
 		timeRemaining.setEditable(false);
 
@@ -81,4 +77,12 @@ public class MonitorWindow extends JFrame implements SnoozeObserver {
 		resetSnoozeDelayTime.setText(Double.toString(snoozeDurationMinutes));
 	}
 
+
+	@Override
+	public void setSoundEnabled(boolean soundEnabled) {
+		this.soundEnabled.setSelected(soundEnabled);
+		
+	}
+	
+	
 }
