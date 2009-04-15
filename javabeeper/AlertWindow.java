@@ -26,7 +26,7 @@ public class AlertWindow extends JFrame implements SnoozeObserver {
 	private static final long serialVersionUID = 3261204676180469008L;
 
 	private JTextField snoozeTimeHours = new JTextField("0");
-	private JTextField snoozeTimeMinutes = new JTextField("0");
+	private JTextField snoozeTimeMinutes = new JTextField("20");
 	private JTextField snoozeTimeSeconds = new JTextField("0");
 	private JCheckBox soundEnabled = new JCheckBox("Enable audio (note: snooze automatically enables audio)");
 
