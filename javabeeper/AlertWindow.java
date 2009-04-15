@@ -15,6 +15,7 @@ import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
@@ -24,12 +25,9 @@ public class AlertWindow extends JFrame implements SnoozeObserver {
 
 	private static final long serialVersionUID = 3261204676180469008L;
 
-	JButton snoozeButton = new JButton("Snooze");
-	JPanel panel1 = new JPanel();
-	JTextField snoozeTimeMinutes = new JTextField("20");
-	JTextField snoozeTimeHours = new JTextField("Hours");
-	JTextField snoozeTimeMinutes2 = new JTextField("Minutes2");
-	JTextField snoozeTimeSeconds = new JTextField("Seconds");
+	private JTextField snoozeTimeHours = new JTextField("0");
+	private JTextField snoozeTimeMinutes = new JTextField("0");
+	private JTextField snoozeTimeSeconds = new JTextField("0");
 	private JCheckBox soundEnabled = new JCheckBox("Enable audio (note: snooze automatically enables audio)");
 
 
@@ -39,28 +37,54 @@ public class AlertWindow extends JFrame implements SnoozeObserver {
 		setEnterAsActionForButtons();
 
 		setTitle("Restart timer");
+		JPanel panel1 = new JPanel();
 		getContentPane().add(panel1, BorderLayout.NORTH);
-		panel1.setLayout(new GridLayout(2, 4));
+		panel1.setLayout(new GridLayout(5, 2));
+
+		JButton snoozeButton = new JButton("Snooze");
 		panel1.add(snoozeButton);
-		panel1.add(snoozeTimeMinutes);
-		panel1.add(snoozeTimeHours);
-		panel1.add(snoozeTimeMinutes2);
-		panel1.add(snoozeTimeSeconds);
 		JTextField arbitraryLabel = new JTextField("You can put an arbitrary label here.");
 		panel1.add(arbitraryLabel);
+        
+		panel1.add(new JLabel("Hours"));
+		panel1.add(snoozeTimeHours);
+
+		panel1.add(new JLabel("Minutes"));
+		panel1.add(snoozeTimeMinutes);
+		
+		panel1.add(new JLabel("Seconds"));
+		panel1.add(snoozeTimeSeconds);
+
 		panel1.add(soundEnabled);
 		soundEnabled.setSelected(true);
 		soundEnabled.setMnemonic(KeyEvent.VK_A);
 		soundEnabled.addActionListener(new EnableAudioCheckBoxActionListener(snoozeController, soundEnabled));
-
+        
+		
 		ActionListener snoozeActionListener = new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				snoozeController.restartSnoozing(Double.parseDouble(snoozeTimeMinutes.getText()));
+				double hours = 0;
+				double minutes = 0;
+				double seconds = 0;
+				try {
+				    hours = Double.parseDouble(snoozeTimeHours.getText());
+				    minutes = Double.parseDouble(snoozeTimeMinutes.getText());
+				    seconds = Double.parseDouble(snoozeTimeSeconds.getText());
+
+				}
+				catch (NumberFormatException e) {
+					// Do nothing about error, but proceed with values gathered so far.
+				}
+			
+				double totalSnoozeTimeMinutes = (hours * Utilities.MINUTES_PER_HOUR) + (minutes) + (seconds / Utilities.SECONDS_PER_MINUTE);
+				snoozeController.restartSnoozing(totalSnoozeTimeMinutes);
 			}
 		};
 
 		snoozeButton.addActionListener(snoozeActionListener);
+		snoozeTimeHours.addActionListener(snoozeActionListener);
 		snoozeTimeMinutes.addActionListener(snoozeActionListener);
+		snoozeTimeSeconds.addActionListener(snoozeActionListener);
 		arbitraryLabel.addActionListener(snoozeActionListener);
 
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -92,6 +116,7 @@ public class AlertWindow extends JFrame implements SnoozeObserver {
 
 	@Override
 	public void setSnoozeDuration(double snoozeDurationMinutes) {
+		// TODO Set the values for HH, MM and SS correctly, just doing MM for now.
 		snoozeTimeMinutes.setText(Double.toString(snoozeDurationMinutes));
 	}
 
