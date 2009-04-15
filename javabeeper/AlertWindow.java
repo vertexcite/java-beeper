@@ -27,6 +27,9 @@ public class AlertWindow extends JFrame implements SnoozeObserver {
 	JButton snoozeButton = new JButton("Snooze");
 	JPanel panel1 = new JPanel();
 	JTextField snoozeTimeMinutes = new JTextField("20");
+	JTextField snoozeTimeHours = new JTextField("Hours");
+	JTextField snoozeTimeMinutes2 = new JTextField("Minutes2");
+	JTextField snoozeTimeSeconds = new JTextField("Seconds");
 	private JCheckBox soundEnabled = new JCheckBox("Enable audio (note: snooze automatically enables audio)");
 
 
@@ -37,9 +40,12 @@ public class AlertWindow extends JFrame implements SnoozeObserver {
 
 		setTitle("Restart timer");
 		getContentPane().add(panel1, BorderLayout.NORTH);
-		panel1.setLayout(new GridLayout(2, 2));
+		panel1.setLayout(new GridLayout(2, 4));
 		panel1.add(snoozeButton);
 		panel1.add(snoozeTimeMinutes);
+		panel1.add(snoozeTimeHours);
+		panel1.add(snoozeTimeMinutes2);
+		panel1.add(snoozeTimeSeconds);
 		JTextField arbitraryLabel = new JTextField("You can put an arbitrary label here.");
 		panel1.add(arbitraryLabel);
 		panel1.add(soundEnabled);
