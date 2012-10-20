@@ -196,14 +196,12 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
     }
     
     void beepAndShow() {
-            if(snoozeController.isSoundEnabled()) {
-                    Toolkit.getDefaultToolkit().beep();
-            }
+        if(snoozeController.isSoundEnabled()) {
+                Toolkit.getDefaultToolkit().beep();
+        }
 
-            Dimension max = getMaximumSize();
-            setBounds(0, 0, max.width, max.height);
-
-            setVisible(true);
+        setVisible(true);
+        setExtendedState(getExtendedState() | javax.swing.JFrame.MAXIMIZED_BOTH);
     }
 
     @Override
