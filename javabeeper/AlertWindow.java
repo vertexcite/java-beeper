@@ -217,7 +217,9 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
                 requestFocus();
                 setAlwaysOnTop(false);
 
-                GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(AlertWindow.this);
+                if(snoozeController.useFullScreenActive()) {
+                    GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(AlertWindow.this);
+                }
             }
         });                
 

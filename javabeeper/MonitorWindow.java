@@ -30,6 +30,7 @@ public class MonitorWindow extends javax.swing.JFrame implements SnoozeObserver 
         timeRemaining = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         soundEnabled = new javax.swing.JCheckBox();
+        useFullScreen = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Java Beeper");
@@ -64,6 +65,13 @@ public class MonitorWindow extends javax.swing.JFrame implements SnoozeObserver 
             }
         });
 
+        useFullScreen.setText("Enable full screen");
+        useFullScreen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                useFullScreenActionPerformed(evt);
+            }
+        });
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -85,7 +93,8 @@ public class MonitorWindow extends javax.swing.JFrame implements SnoozeObserver 
                             .add(layout.createSequentialGroup()
                                 .add(jLabel1)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                                .add(resetSnoozeDelayTime, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 100, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))))
+                                .add(resetSnoozeDelayTime, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 100, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                            .add(useFullScreen))))
                 .addContainerGap(56, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -101,7 +110,9 @@ public class MonitorWindow extends javax.swing.JFrame implements SnoozeObserver 
                     .add(resetSnoozeDelayTime, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(soundEnabled)
-                .add(34, 34, 34)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(useFullScreen)
+                .add(5, 5, 5)
                 .add(jLabel3)
                 .addContainerGap())
         );
@@ -121,6 +132,10 @@ public class MonitorWindow extends javax.swing.JFrame implements SnoozeObserver 
         snoozeController.setSoundEnabled(soundEnabled.isSelected());
     }//GEN-LAST:event_soundEnabledActionPerformed
 
+    private void useFullScreenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_useFullScreenActionPerformed
+        snoozeController.setUseFullScreen(useFullScreen.isSelected());
+    }//GEN-LAST:event_useFullScreenActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
@@ -129,6 +144,7 @@ public class MonitorWindow extends javax.swing.JFrame implements SnoozeObserver 
     private javax.swing.JTextField resetSnoozeDelayTime;
     private javax.swing.JCheckBox soundEnabled;
     private javax.swing.JTextField timeRemaining;
+    private javax.swing.JCheckBox useFullScreen;
     // End of variables declaration//GEN-END:variables
 
     void setController(SnoozeController controller) {

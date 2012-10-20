@@ -193,10 +193,14 @@ public class SnoozeController {
 		});
 	}
 
+        private boolean useFullScreen=false;
+
 	private void hideAlert() {
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-                            GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(null);
+                            if(useFullScreen) {
+                                GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(null);
+                            }
 
                             if(alertWindow == null) return;
                             alertWindow.setVisible(false);
@@ -242,5 +246,13 @@ public class SnoozeController {
 			}
 		});
 	}
+
+    boolean useFullScreenActive() {
+        return useFullScreen;
+    }
+
+    void setUseFullScreen(boolean useFullScreen) {
+        this.useFullScreen = useFullScreen;
+    }
 
 }
