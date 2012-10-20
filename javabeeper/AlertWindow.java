@@ -1,5 +1,6 @@
 package javabeeper;
 
+import java.awt.Dimension;
 import java.awt.Toolkit;
 
 /**
@@ -198,6 +199,10 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
             if(snoozeController.isSoundEnabled()) {
                     Toolkit.getDefaultToolkit().beep();
             }
+
+            Dimension max = getMaximumSize();
+            setBounds(0, 0, max.width, max.height);
+
             setVisible(true);
     }
 
