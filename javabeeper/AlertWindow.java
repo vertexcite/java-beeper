@@ -26,7 +26,7 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButton1 = new javax.swing.JButton();
+        Snooze = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         snoozeTimeMinutes = new javax.swing.JTextField();
         snoozeTimeSeconds = new javax.swing.JTextField();
@@ -38,8 +38,14 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
         jTextArea1 = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Restart timer");
 
-        jButton1.setText("Snooze");
+        Snooze.setText("Snooze");
+        Snooze.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SnoozeActionPerformed(evt);
+            }
+        });
 
         snoozeTimeMinutes.setText("20");
         snoozeTimeMinutes.addActionListener(new java.awt.event.ActionListener() {
@@ -93,6 +99,11 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
 
         soundEnabled.setSelected(true);
         soundEnabled.setText("Enable audio. (Note: if disabled, then resetting snooze will enable audio again)");
+        soundEnabled.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                soundEnabledActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("Arbitrary text message:");
 
@@ -117,7 +128,7 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
                                 .add(soundEnabled))
                             .add(layout.createSequentialGroup()
                                 .add(214, 214, 214)
-                                .add(jButton1))
+                                .add(Snooze))
                             .add(layout.createSequentialGroup()
                                 .addContainerGap()
                                 .add(jLabel2)))
@@ -139,7 +150,7 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
                 .add(18, 18, 18)
-                .add(jButton1)
+                .add(Snooze)
                 .addContainerGap())
         );
 
@@ -147,16 +158,24 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
     }// </editor-fold>//GEN-END:initComponents
 
     private void snoozeTimeHoursActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_snoozeTimeHoursActionPerformed
-        // TODO add your handling code here:
+        snoozeAction();
     }//GEN-LAST:event_snoozeTimeHoursActionPerformed
 
     private void snoozeTimeSecondsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_snoozeTimeSecondsActionPerformed
-        // TODO add your handling code here:
+        snoozeAction();
     }//GEN-LAST:event_snoozeTimeSecondsActionPerformed
 
     private void snoozeTimeMinutesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_snoozeTimeMinutesActionPerformed
-        // TODO add your handling code here:
+        snoozeAction();
     }//GEN-LAST:event_snoozeTimeMinutesActionPerformed
+
+    private void soundEnabledActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_soundEnabledActionPerformed
+        snoozeController.setSoundEnabled(soundEnabled.isSelected());
+    }//GEN-LAST:event_soundEnabledActionPerformed
+
+    private void SnoozeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SnoozeActionPerformed
+        snoozeAction();
+    }//GEN-LAST:event_SnoozeActionPerformed
 
     /**
      * @param args the command line arguments
@@ -193,7 +212,7 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton Snooze;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
@@ -226,6 +245,24 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
     public void setSnoozeDuration(double snoozeDurationMinutes) {
             // TODO Set the values for HH, MM and SS correctly, just doing MM for now.
             snoozeTimeMinutes.setText(Double.toString(snoozeDurationMinutes));
+    }
+    
+    public void snoozeAction() {
+        double hours = 0;
+        double minutes = 0;
+        double seconds = 0;
+        try {
+            hours = Double.parseDouble(snoozeTimeHours.getText());
+            minutes = Double.parseDouble(snoozeTimeMinutes.getText());
+            seconds = Double.parseDouble(snoozeTimeSeconds.getText());
+
+        }
+        catch (NumberFormatException e) {
+                // Do nothing about error, but proceed with values gathered so far.
+        }
+
+        double totalSnoozeTimeMinutes = (hours * Utilities.MINUTES_PER_HOUR) + (minutes) + (seconds / Utilities.SECONDS_PER_MINUTE);
+        snoozeController.restartSnoozing(totalSnoozeTimeMinutes);
     }
     
 }
