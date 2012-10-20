@@ -1,14 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package javabeeper;
 
 import java.awt.Toolkit;
 
 /**
  *
- * @author rbri053
+ * @author Randall Britten
  */
 public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
 

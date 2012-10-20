@@ -1,12 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package javabeeper;
 
 /**
  *
- * @author rbri053
+ * @author Randall Britten
  */
 public class MonitorWindow extends javax.swing.JFrame implements SnoozeObserver {
 
