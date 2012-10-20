@@ -12,6 +12,31 @@ public class SnoozeController {
 	 * Small offset for time calculation to help alleviate rounding when converting from milliseconds to time display.
 	 */
 	private static final long EPSILON_MILLISECONDS = 1;
+
+        private static void setNimbusLookAndFeel() {
+            /* Set the Nimbus look and feel */
+            //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+            /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+             * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+             */
+            try {
+                for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                    if ("Nimbus".equals(info.getName())) {
+                        javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                        break;
+                    }
+                }
+            } catch (ClassNotFoundException ex) {
+                java.util.logging.Logger.getLogger(MonitorWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            } catch (InstantiationException ex) {
+                java.util.logging.Logger.getLogger(MonitorWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            } catch (IllegalAccessException ex) {
+                java.util.logging.Logger.getLogger(MonitorWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+                java.util.logging.Logger.getLogger(MonitorWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            }
+            //</editor-fold>
+        }
 	
 	private AlertWindow mainWindow;
 	private MonitorWindow monitorWindow;
@@ -25,15 +50,34 @@ public class SnoozeController {
 	private Thread heartBeatThread;
 	private boolean soundEnabled = true;
 
+        
+        /**
+         * @param args the command line arguments
+         */
+
 	public static void main(String args[]) throws Exception {
-		final SnoozeController controller = new SnoozeController();
-		javax.swing.SwingUtilities.invokeAndWait(new Runnable() {
-			public void run() {
-				controller.addObserver(controller.monitorWindow = new MonitorWindow(controller));
-				controller.addObserver(controller.mainWindow = new AlertWindow(controller));
-			}
-		});
-		controller.heartBeatLoop();
+            setNimbusLookAndFeel();
+
+            final SnoozeController controller = new SnoozeController();
+
+            
+            /* Create and display the form */
+
+            java.awt.EventQueue.invokeAndWait(new Runnable() {
+                public void run() {
+                    controller.monitorWindow = new MonitorWindow();
+                    controller.monitorWindow.setController(controller);
+
+                    controller.addObserver(controller.monitorWindow);
+                    controller.monitorWindow.setVisible(true);
+                    
+                    //controller.mainWindow = new AlertWindow(controller);
+                    //controller.addObserver(controller.mainWindow);
+                }
+            });
+
+            
+            controller.heartBeatLoop();
 	}
 
 	protected void addObserver(SnoozeObserver observer) {
@@ -139,6 +183,7 @@ public class SnoozeController {
 	private void showAlert() {
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
+                                if(mainWindow == null) return;
 				mainWindow.beepAndShow();
 			}
 		});
@@ -147,6 +192,7 @@ public class SnoozeController {
 	private void hideAlert() {
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
+                                if(mainWindow == null) return;
 				mainWindow.setVisible(false);
 			}
 		});
