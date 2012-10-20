@@ -114,7 +114,6 @@ public class MonitorWindow extends javax.swing.JFrame implements SnoozeObserver 
     }// </editor-fold>//GEN-END:initComponents
 
     private void resetSnoozeDelayTimeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetSnoozeDelayTimeActionPerformed
-
         snoozeController.restartSnoozing(Double.parseDouble(resetSnoozeDelayTime.getText()));
     }//GEN-LAST:event_resetSnoozeDelayTimeActionPerformed
 
@@ -123,7 +122,7 @@ public class MonitorWindow extends javax.swing.JFrame implements SnoozeObserver 
     }//GEN-LAST:event_timeRemainingActionPerformed
 
     private void soundEnabledActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_soundEnabledActionPerformed
-        // TODO add your handling code here:
+        snoozeController.setSoundEnabled(soundEnabled.isSelected());
     }//GEN-LAST:event_soundEnabledActionPerformed
 
 
