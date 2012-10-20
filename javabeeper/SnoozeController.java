@@ -1,5 +1,6 @@
 package javabeeper;
 
+import java.awt.GraphicsEnvironment;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,7 @@ public class SnoozeController {
 	 * Small offset for time calculation to help alleviate rounding when converting from milliseconds to time display.
 	 */
 	private static final long EPSILON_MILLISECONDS = 1;
-        private static final double PERIODIC_IRRITATION_INTERVAL_MINUTES = 0.1;
+        private static final double PERIODIC_IRRITATION_INTERVAL_MINUTES = 0.5;
 
         private static void setNimbusLookAndFeel() {
             /* Set the Nimbus look and feel */
@@ -195,8 +196,10 @@ public class SnoozeController {
 	private void hideAlert() {
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-                                if(alertWindow == null) return;
-				alertWindow.setVisible(false);
+                            GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(null);
+
+                            if(alertWindow == null) return;
+                            alertWindow.setVisible(false);
 			}
 		});
 	}

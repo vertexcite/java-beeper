@@ -1,6 +1,7 @@
 package javabeeper;
 
 import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
 import javax.swing.JFrame;
 
@@ -206,6 +207,7 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
             public void run() {
                 setVisible(true);
 
+                
                 int state = getExtendedState();
                 state &= ~JFrame.ICONIFIED;
                 state |= javax.swing.JFrame.MAXIMIZED_BOTH;
@@ -215,6 +217,7 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
                 requestFocus();
                 setAlwaysOnTop(false);
 
+                GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(AlertWindow.this);
             }
         });                
 
