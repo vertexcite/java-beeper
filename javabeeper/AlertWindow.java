@@ -2,6 +2,7 @@ package javabeeper;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import javax.swing.JFrame;
 
 /**
  *
@@ -200,8 +201,23 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
                 Toolkit.getDefaultToolkit().beep();
         }
 
-        setVisible(true);
-        setExtendedState(getExtendedState() | javax.swing.JFrame.MAXIMIZED_BOTH);
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                setVisible(true);
+
+                int state = getExtendedState();
+                state &= ~JFrame.ICONIFIED;
+                state |= javax.swing.JFrame.MAXIMIZED_BOTH;
+                setExtendedState(state);
+                setAlwaysOnTop(true);
+                toFront();
+                requestFocus();
+                setAlwaysOnTop(false);
+
+            }
+        });                
+
     }
 
     @Override
