@@ -38,7 +38,7 @@ public class SnoozeController {
             //</editor-fold>
         }
 	
-	private AlertWindow mainWindow;
+	private AlertWindow alertWindow;
 	private MonitorWindow monitorWindow;
 	private List<SnoozeObserver> observers = new ArrayList<SnoozeObserver>();
 
@@ -71,8 +71,10 @@ public class SnoozeController {
                     controller.addObserver(controller.monitorWindow);
                     controller.monitorWindow.setVisible(true);
                     
-                    //controller.mainWindow = new AlertWindow(controller);
-                    //controller.addObserver(controller.mainWindow);
+                    controller.alertWindow = new AlertWindow();
+                    controller.alertWindow.setController(controller);
+                    controller.addObserver(controller.alertWindow);
+                    controller.alertWindow.setVisible(true);
                 }
             });
 
@@ -183,8 +185,8 @@ public class SnoozeController {
 	private void showAlert() {
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-                                if(mainWindow == null) return;
-				mainWindow.beepAndShow();
+                                if(alertWindow == null) return;
+				alertWindow.beepAndShow();
 			}
 		});
 	}
@@ -192,8 +194,8 @@ public class SnoozeController {
 	private void hideAlert() {
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-                                if(mainWindow == null) return;
-				mainWindow.setVisible(false);
+                                if(alertWindow == null) return;
+				alertWindow.setVisible(false);
 			}
 		});
 	}
