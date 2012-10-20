@@ -75,7 +75,7 @@ public class SnoozeController {
                     controller.alertWindow = new AlertWindow();
                     controller.alertWindow.setController(controller);
                     controller.addObserver(controller.alertWindow);
-                    controller.alertWindow.setVisible(true);
+                    controller.alertWindow.beepAndShow();
                 }
             });
 
