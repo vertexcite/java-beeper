@@ -12,6 +12,7 @@ public class SnoozeController {
 	 * Small offset for time calculation to help alleviate rounding when converting from milliseconds to time display.
 	 */
 	private static final long EPSILON_MILLISECONDS = 1;
+        private static final double PERIODIC_IRRITATION_INTERVAL_MINUTES = 0.1;
 
         private static void setNimbusLookAndFeel() {
             /* Set the Nimbus look and feel */
@@ -44,7 +45,7 @@ public class SnoozeController {
 
 	private long nextWakeTimeMilliseconds = System.currentTimeMillis();
 	private boolean snoozing = false;
-	private long nextIrritateTimeMilliseconds = System.currentTimeMillis() + Utilities.fromMinutesToMilliseconds(1);
+	private long nextIrritateTimeMilliseconds = System.currentTimeMillis() + Utilities.fromMinutesToMilliseconds(PERIODIC_IRRITATION_INTERVAL_MINUTES);
 	private double snoozeDurationMinutes = 20;
 	private long resynchReferenceTime = -1;
 	private Thread heartBeatThread;
@@ -179,7 +180,7 @@ public class SnoozeController {
 	}
 
 	private void updateNextIrritateTime() {
-		nextIrritateTimeMilliseconds = System.currentTimeMillis() + Utilities.MILLISECONDS_PER_SECOND + Utilities.fromMinutesToMilliseconds(1);
+		nextIrritateTimeMilliseconds = System.currentTimeMillis() + Utilities.MILLISECONDS_PER_SECOND + Utilities.fromMinutesToMilliseconds(PERIODIC_IRRITATION_INTERVAL_MINUTES);
 	}
 
 	private void showAlert() {
