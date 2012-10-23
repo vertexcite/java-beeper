@@ -1,6 +1,5 @@
 package javabeeper;
 
-import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
 import javax.swing.JFrame;
@@ -29,7 +28,7 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        Snooze = new javax.swing.JButton();
+        snooze = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         snoozeTimeMinutes = new javax.swing.JTextField();
         snoozeTimeSeconds = new javax.swing.JTextField();
@@ -43,10 +42,11 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Restart timer");
 
-        Snooze.setText("Snooze");
-        Snooze.addActionListener(new java.awt.event.ActionListener() {
+        snooze.setText("Snooze");
+        snooze.setFocusCycleRoot(true);
+        snooze.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                SnoozeActionPerformed(evt);
+                snoozeActionPerformed(evt);
             }
         });
 
@@ -120,25 +120,16 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
+                .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jScrollPane1)
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                            .add(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .add(soundEnabled))
-                            .add(layout.createSequentialGroup()
-                                .add(214, 214, 214)
-                                .add(Snooze))
-                            .add(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .add(jLabel2)))
-                        .add(0, 0, Short.MAX_VALUE))
-                    .add(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(jScrollPane1)))
+                            .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(soundEnabled)
+                            .add(jLabel2)
+                            .add(snooze))
+                        .add(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -151,10 +142,10 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
                 .add(35, 35, 35)
                 .add(jLabel2)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
-                .add(18, 18, 18)
-                .add(Snooze)
-                .addContainerGap())
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 69, Short.MAX_VALUE)
+                .add(snooze)
+                .add(12, 12, 12))
         );
 
         pack();
@@ -176,17 +167,17 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
         snoozeController.setSoundEnabled(soundEnabled.isSelected());
     }//GEN-LAST:event_soundEnabledActionPerformed
 
-    private void SnoozeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SnoozeActionPerformed
+    private void snoozeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_snoozeActionPerformed
         snoozeAction();
-    }//GEN-LAST:event_SnoozeActionPerformed
+    }//GEN-LAST:event_snoozeActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton Snooze;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JButton snooze;
     private javax.swing.JTextField snoozeTimeHours;
     private javax.swing.JTextField snoozeTimeMinutes;
     private javax.swing.JTextField snoozeTimeSeconds;
@@ -205,6 +196,7 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
+                getRootPane().setDefaultButton(snooze);
                 setVisible(true);
 
                 
@@ -214,8 +206,11 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
                 setExtendedState(state);
                 setAlwaysOnTop(true);
                 toFront();
-                requestFocus();
+                snooze.requestFocus();
+                snooze.requestFocusInWindow();
                 setAlwaysOnTop(false);
+
+
 
                 if(snoozeController.useFullScreenActive()) {
                     GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(AlertWindow.this);
