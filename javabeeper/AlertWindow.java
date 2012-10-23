@@ -2,7 +2,10 @@ package javabeeper;
 
 import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
+import javax.swing.InputMap;
 import javax.swing.JFrame;
+import javax.swing.KeyStroke;
+import javax.swing.UIManager;
 
 /**
  *
@@ -17,6 +20,7 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
      */
     public AlertWindow() {
         initComponents();
+        setSpaceAsActionForButtons();
     }
 
     /**
@@ -248,6 +252,16 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
 
         double totalSnoozeTimeMinutes = (hours * Utilities.MINUTES_PER_HOUR) + (minutes) + (seconds / Utilities.SECONDS_PER_MINUTE);
         snoozeController.restartSnoozing(totalSnoozeTimeMinutes);
+    }
+
+    private void setSpaceAsActionForButtons() {
+        // @todo: not sure if this is doing anything useful at the moment.
+        InputMap im = (InputMap) UIManager.getDefaults().get("Button.focusInputMap");
+        Object pressedAction = im.get(KeyStroke.getKeyStroke("pressed SPACE"));
+        Object releasedAction = im.get(KeyStroke.getKeyStroke("released SPACE"));
+
+        im.put(KeyStroke.getKeyStroke("pressed ENTER"), pressedAction);
+        im.put(KeyStroke.getKeyStroke("released ENTER"), releasedAction);
     }
     
 }
