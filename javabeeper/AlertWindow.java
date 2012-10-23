@@ -40,8 +40,7 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
         jLabel1 = new javax.swing.JLabel();
         soundEnabled = new javax.swing.JCheckBox();
         jLabel2 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        arbitraryMessage = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Restart timer");
@@ -114,10 +113,12 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
 
         jLabel2.setText("Arbitrary text message:");
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jTextArea1.setText("You can type anything you want here, like a note to yourself for later.");
-        jScrollPane1.setViewportView(jTextArea1);
+        arbitraryMessage.setText("You can type anything you want here, like a note to yourself for later.");
+        arbitraryMessage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                arbitraryMessageActionPerformed(evt);
+            }
+        });
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -125,16 +126,13 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jScrollPane1)
-                    .add(layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(soundEnabled)
-                            .add(jLabel2)
-                            .add(snooze))
-                        .add(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                    .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(soundEnabled, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(jLabel2)
+                    .add(snooze)
+                    .add(arbitraryMessage))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -146,8 +144,8 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
                 .add(35, 35, 35)
                 .add(jLabel2)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 69, Short.MAX_VALUE)
+                .add(arbitraryMessage, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 87, Short.MAX_VALUE)
                 .add(snooze)
                 .add(12, 12, 12))
         );
@@ -175,12 +173,15 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
         snoozeAction();
     }//GEN-LAST:event_snoozeActionPerformed
 
+    private void arbitraryMessageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_arbitraryMessageActionPerformed
+        snoozeAction();
+    }//GEN-LAST:event_arbitraryMessageActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField arbitraryMessage;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JButton snooze;
     private javax.swing.JTextField snoozeTimeHours;
     private javax.swing.JTextField snoozeTimeMinutes;
