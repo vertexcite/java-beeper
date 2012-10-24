@@ -55,11 +55,11 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
 
         jLabel1.setText("Snooze time (hh:mm:ss)");
 
-        snoozeTimeHours.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+        snoozeTimeHours.setModel(new javax.swing.SpinnerNumberModel(Long.valueOf(0L), Long.valueOf(0L), null, Long.valueOf(1L)));
 
-        snoozeTimeMinutes.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(20), Integer.valueOf(0), null, Integer.valueOf(1)));
+        snoozeTimeMinutes.setModel(new javax.swing.SpinnerNumberModel(Long.valueOf(20L), Long.valueOf(0L), null, Long.valueOf(1L)));
 
-        snoozeTimeSeconds.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+        snoozeTimeSeconds.setModel(new javax.swing.SpinnerNumberModel(Long.valueOf(0L), Long.valueOf(0L), null, Long.valueOf(1L)));
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -206,17 +206,17 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
 
     @Override
     public void setSnoozeDuration(double snoozeDurationMinutes) {
-            // TODO Set the values for HH, MM and SS correctly, just doing MM for now.
-            snoozeTimeMinutes.setValue(snoozeDurationMinutes);
+        snoozeTimeHours.setValue(Utilities.minutesToHoursMinutesSeconds(snoozeDurationMinutes).hours);
+        snoozeTimeMinutes.setValue(Utilities.minutesToHoursMinutesSeconds(snoozeDurationMinutes).minutes);
+        snoozeTimeSeconds.setValue(Utilities.minutesToHoursMinutesSeconds(snoozeDurationMinutes).seconds);
     }
     
     public void snoozeAction() {
-        int hours = (int) snoozeTimeHours.getValue();
-        int minutes = (int) snoozeTimeMinutes.getValue();
-        int seconds = (int) snoozeTimeSeconds.getValue();
+        long hours = (long) snoozeTimeHours.getValue();
+        long minutes = (long) snoozeTimeMinutes.getValue();
+        long seconds = (long) snoozeTimeSeconds.getValue();
 
-        double totalSnoozeTimeMinutes = (hours * Utilities.MINUTES_PER_HOUR) + (minutes) + (((double)seconds) / Utilities.SECONDS_PER_MINUTE);
-        snoozeController.restartSnoozing(totalSnoozeTimeMinutes);
+        snoozeController.restartSnoozing(new Utilities.HoursMinutesSeconds(hours, minutes, seconds));
     }
 
     private void setSpaceAsActionForButtons() {

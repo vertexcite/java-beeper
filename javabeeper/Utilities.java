@@ -5,20 +5,44 @@ package javabeeper;
  */
 public class Utilities {
 
+        public static HoursMinutesSeconds minutesToHoursMinutesSeconds(double paramDurationMinutes) {
+            double absDurationMinutes = Math.abs(paramDurationMinutes);
+            long absDurationSeconds = Math.round(absDurationMinutes * SECONDS_PER_MINUTE);
+            
+            final long hours = absDurationSeconds / SECONDS_PER_HOUR;
+            final long minutes = absDurationSeconds / SECONDS_PER_MINUTE - MINUTES_PER_HOUR * hours;
+            final long seconds = absDurationSeconds - minutes * SECONDS_PER_MINUTE - hours * SECONDS_PER_HOUR;
+            
+            return new HoursMinutesSeconds(hours, minutes, seconds);
+        }
+    
+        public static class HoursMinutesSeconds {
+            public long hours;
+            public long minutes;
+            public long seconds;
+
+            public HoursMinutesSeconds(long hours, long minutes, long seconds) {
+                this.hours = hours;
+                this.minutes = minutes;
+                this.seconds = seconds;
+            }
+            
+            public double asMinutes() {
+                return (hours * Utilities.MINUTES_PER_HOUR) + (minutes) + (((double)seconds) / Utilities.SECONDS_PER_MINUTE);                
+            }
+        }
+
 	public static final long SECONDS_PER_HOUR = 3600;
 	public static final long MINUTES_PER_HOUR = 60;
 	
 	public static String minutesAsTimeStringHHMMSS(double paramDurationMinutes) {
 		String signString = "";
-		double absDurationMinutes = Math.abs(paramDurationMinutes);
 		if(paramDurationMinutes < 0) {
 			signString = "-";
 		}
-		long absDurationSeconds = Math.round(absDurationMinutes * SECONDS_PER_MINUTE);
-		long wholeHours = absDurationSeconds / SECONDS_PER_HOUR;
-		long minutesDigits = absDurationSeconds/ SECONDS_PER_MINUTE - MINUTES_PER_HOUR * wholeHours;
-		long secondsDigits = absDurationSeconds - minutesDigits * SECONDS_PER_MINUTE - wholeHours * SECONDS_PER_HOUR;
-		String timeStringHHMMSS = String.format("%s%02d:%02d:%02d", signString, wholeHours, minutesDigits, secondsDigits );
+                HoursMinutesSeconds hms = minutesToHoursMinutesSeconds(paramDurationMinutes);
+
+                String timeStringHHMMSS = String.format("%s%02d:%02d:%02d", signString, hms.hours, hms.minutes, hms.seconds );
 		return timeStringHHMMSS;
 	}
 

@@ -24,26 +24,19 @@ public class MonitorWindow extends javax.swing.JFrame implements SnoozeObserver 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        resetSnoozeDelayTime_textInput = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         timeRemaining = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         soundEnabled = new javax.swing.JCheckBox();
         useFullScreen = new javax.swing.JCheckBox();
         resetCountdown_button = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        snoozeTimeHours = new javax.swing.JSpinner();
+        snoozeTimeMinutes = new javax.swing.JSpinner();
+        snoozeTimeSeconds = new javax.swing.JSpinner();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Java Beeper");
-
-        jLabel1.setText("Reset countdown to:");
-
-        resetSnoozeDelayTime_textInput.setText("20");
-        resetSnoozeDelayTime_textInput.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                resetSnoozeDelayTime_textInputActionPerformed(evt);
-            }
-        });
 
         jLabel2.setText("Current countdown:");
 
@@ -75,13 +68,34 @@ public class MonitorWindow extends javax.swing.JFrame implements SnoozeObserver 
             }
         });
 
+        jLabel4.setText("Reset countdown to (hh:mm:ss)");
+
+        snoozeTimeHours.setModel(new javax.swing.SpinnerNumberModel(Long.valueOf(0L), Long.valueOf(0L), null, Long.valueOf(1L)));
+
+        snoozeTimeMinutes.setModel(new javax.swing.SpinnerNumberModel(Long.valueOf(20L), Long.valueOf(0L), null, Long.valueOf(1L)));
+
+        snoozeTimeSeconds.setModel(new javax.swing.SpinnerNumberModel(Long.valueOf(0L), Long.valueOf(0L), null, Long.valueOf(1L)));
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jLabel4)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(snoozeTimeHours, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 58, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(snoozeTimeMinutes, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 58, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(snoozeTimeSeconds, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 58, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .add(layout.createSequentialGroup()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, timeRemaining)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .add(0, 0, Short.MAX_VALUE)
+                        .add(jLabel3))
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(layout.createSequentialGroup()
@@ -91,17 +105,9 @@ public class MonitorWindow extends javax.swing.JFrame implements SnoozeObserver 
                                 .addContainerGap()
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                                     .add(soundEnabled)
-                                    .add(layout.createSequentialGroup()
-                                        .add(jLabel1)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                                        .add(resetSnoozeDelayTime_textInput, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 100, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                        .add(resetCountdown_button))
-                                    .add(useFullScreen))))
-                        .add(0, 64, Short.MAX_VALUE))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                        .add(0, 0, Short.MAX_VALUE)
-                        .add(jLabel3)))
+                                    .add(useFullScreen)))
+                            .add(resetCountdown_button))
+                        .add(0, 64, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -117,20 +123,19 @@ public class MonitorWindow extends javax.swing.JFrame implements SnoozeObserver 
                 .add(useFullScreen)
                 .add(18, 18, 18)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(resetSnoozeDelayTime_textInput, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(resetCountdown_button))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 70, Short.MAX_VALUE)
+                    .add(jLabel4)
+                    .add(snoozeTimeHours, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(snoozeTimeMinutes, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(snoozeTimeSeconds, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(resetCountdown_button)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 37, Short.MAX_VALUE)
                 .add(jLabel3)
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void resetSnoozeDelayTime_textInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetSnoozeDelayTime_textInputActionPerformed
-        snoozeController.restartSnoozing(Double.parseDouble(resetSnoozeDelayTime_textInput.getText()));
-    }//GEN-LAST:event_resetSnoozeDelayTime_textInputActionPerformed
 
     private void soundEnabledActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_soundEnabledActionPerformed
         snoozeController.setSoundEnabled(soundEnabled.isSelected());
@@ -141,16 +146,18 @@ public class MonitorWindow extends javax.swing.JFrame implements SnoozeObserver 
     }//GEN-LAST:event_useFullScreenActionPerformed
 
     private void resetCountdown_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetCountdown_buttonActionPerformed
-        snoozeController.restartSnoozing(Double.parseDouble(resetSnoozeDelayTime_textInput.getText()));
+        snoozeAction();
     }//GEN-LAST:event_resetCountdown_buttonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JButton resetCountdown_button;
-    private javax.swing.JTextField resetSnoozeDelayTime_textInput;
+    private javax.swing.JSpinner snoozeTimeHours;
+    private javax.swing.JSpinner snoozeTimeMinutes;
+    private javax.swing.JSpinner snoozeTimeSeconds;
     private javax.swing.JCheckBox soundEnabled;
     private javax.swing.JTextField timeRemaining;
     private javax.swing.JCheckBox useFullScreen;
@@ -165,15 +172,27 @@ public class MonitorWindow extends javax.swing.JFrame implements SnoozeObserver 
         this.soundEnabled.setSelected(soundEnabled);		
     }
 
+    // @todo: copied from AlertWindow, should find a way of handling common code on UI, probably use common superclass.
     @Override
     public void setSnoozeDuration(double snoozeDurationMinutes) {
-        resetSnoozeDelayTime_textInput.setText(Double.toString(snoozeDurationMinutes));
+        snoozeTimeHours.setValue(Utilities.minutesToHoursMinutesSeconds(snoozeDurationMinutes).hours);
+        snoozeTimeMinutes.setValue(Utilities.minutesToHoursMinutesSeconds(snoozeDurationMinutes).minutes);
+        snoozeTimeSeconds.setValue(Utilities.minutesToHoursMinutesSeconds(snoozeDurationMinutes).seconds);
     }
 
     public void setTimeRemainingDisplay(double paramMinutesRemaining) {
         String timeStringHHMMSS = Utilities.minutesAsTimeStringHHMMSS(paramMinutesRemaining);
         timeRemaining.setText(timeStringHHMMSS);
         setTitle(timeStringHHMMSS + "  Java Beeper" );
+    }
+
+    // @todo: copied from AlertWindow, should find a way of handling common code on UI, probably use common superclass.
+    public void snoozeAction() {
+        long hours = (long) snoozeTimeHours.getValue();
+        long minutes = (long) snoozeTimeMinutes.getValue();
+        long seconds = (long) snoozeTimeSeconds.getValue();
+
+        snoozeController.restartSnoozing(new Utilities.HoursMinutesSeconds(hours, minutes, seconds));
     }
     
 

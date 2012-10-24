@@ -3,6 +3,7 @@ package javabeeper;
 import java.awt.GraphicsEnvironment;
 import java.util.ArrayList;
 import java.util.List;
+import javabeeper.Utilities.HoursMinutesSeconds;
 
 public class SnoozeController {
 
@@ -28,13 +29,7 @@ public class SnoozeController {
                         break;
                     }
                 }
-            } catch (ClassNotFoundException ex) {
-                java.util.logging.Logger.getLogger(MonitorWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            } catch (InstantiationException ex) {
-                java.util.logging.Logger.getLogger(MonitorWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            } catch (IllegalAccessException ex) {
-                java.util.logging.Logger.getLogger(MonitorWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
                 java.util.logging.Logger.getLogger(MonitorWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             }
             //</editor-fold>
@@ -42,7 +37,7 @@ public class SnoozeController {
 	
 	private AlertWindow alertWindow;
 	private MonitorWindow monitorWindow;
-	private List<SnoozeObserver> observers = new ArrayList<SnoozeObserver>();
+	private List<SnoozeObserver> observers = new ArrayList<>();
 
 	private long nextWakeTimeMilliseconds = System.currentTimeMillis();
 	private boolean snoozing = false;
@@ -66,6 +61,7 @@ public class SnoozeController {
             /* Create and display the form */
 
             java.awt.EventQueue.invokeAndWait(new Runnable() {
+                @Override
                 public void run() {
                     controller.monitorWindow = new MonitorWindow();
                     controller.monitorWindow.setController(controller);
@@ -102,11 +98,11 @@ public class SnoozeController {
 	 * Either start snoozing, or if already snoozing, continue, but reset snooze time.
 	 * @param paramSnoozeDurationMinutes Amount of time to snooze for.
 	 */
-	public synchronized void restartSnoozing(final double paramSnoozeDurationMinutes) {
+        public synchronized void restartSnoozing(final HoursMinutesSeconds hoursMinutesSeconds) {
 		snoozing = true;
 		hideAlert();
 		setSoundEnabled(true);
-		setSnoozeDurationMinutes(paramSnoozeDurationMinutes);
+		setSnoozeDurationMinutes(hoursMinutesSeconds.asMinutes());
 		updateRemainingTimeDisplay();
 	}
 
@@ -186,8 +182,11 @@ public class SnoozeController {
 
 	private void showAlert() {
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+                    @Override
 			public void run() {
-                                if(alertWindow == null) return;
+                                if(alertWindow == null) {
+                                return;
+                            }
 				alertWindow.beepAndShow();
 			}
 		});
@@ -197,12 +196,15 @@ public class SnoozeController {
 
 	private void hideAlert() {
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+                    @Override
 			public void run() {
                             if(useFullScreen) {
                                 GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(null);
                             }
 
-                            if(alertWindow == null) return;
+                            if(alertWindow == null) {
+                                return;
+                            }
                             alertWindow.setVisible(false);
 			}
 		});
@@ -212,6 +214,7 @@ public class SnoozeController {
 		long timeNow = System.currentTimeMillis();
 		final double minutesRemaining = Utilities.fromMillisecondsToMinutes(nextWakeTimeMilliseconds - timeNow + EPSILON_MILLISECONDS);
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+                    @Override
 			public void run() {
 				monitorWindow.setTimeRemainingDisplay(minutesRemaining);
 			}
@@ -239,6 +242,7 @@ public class SnoozeController {
 	public synchronized void setSoundEnabled(final boolean paramSoundEnabled) {
 		soundEnabled  = paramSoundEnabled;
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+                    @Override
 			public void run() {
 				for (SnoozeObserver observer : observers) {
 					observer.setSoundEnabled(paramSoundEnabled);
