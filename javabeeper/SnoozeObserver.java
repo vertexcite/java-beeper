@@ -7,7 +7,7 @@ package javabeeper;
  *
  */
 public interface SnoozeObserver {
-	void setSnoozeDuration(double snoozeDurationMinutes);
+	void setSnoozeDurationAndDoSnooze(double snoozeDurationMinutes);
 
 	void setSoundEnabled(boolean soundEnabled);
 }

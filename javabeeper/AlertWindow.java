@@ -205,10 +205,11 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
     }
 
     @Override
-    public void setSnoozeDuration(double snoozeDurationMinutes) {
+    public void setSnoozeDurationAndDoSnooze(double snoozeDurationMinutes) {
         snoozeTimeHours.setValue(Utilities.minutesToHoursMinutesSeconds(snoozeDurationMinutes).hours);
         snoozeTimeMinutes.setValue(Utilities.minutesToHoursMinutesSeconds(snoozeDurationMinutes).minutes);
         snoozeTimeSeconds.setValue(Utilities.minutesToHoursMinutesSeconds(snoozeDurationMinutes).seconds);
+        toBack();
     }
     
     public void snoozeAction() {

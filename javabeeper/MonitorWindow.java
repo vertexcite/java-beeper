@@ -197,10 +197,11 @@ public class MonitorWindow extends javax.swing.JFrame implements SnoozeObserver 
 
     // @todo: copied from AlertWindow, should find a way of handling common code on UI, probably use common superclass.
     @Override
-    public void setSnoozeDuration(double snoozeDurationMinutes) {
+    public void setSnoozeDurationAndDoSnooze(double snoozeDurationMinutes) {
         snoozeTimeHours.setValue(Utilities.minutesToHoursMinutesSeconds(snoozeDurationMinutes).hours);
         snoozeTimeMinutes.setValue(Utilities.minutesToHoursMinutesSeconds(snoozeDurationMinutes).minutes);
         snoozeTimeSeconds.setValue(Utilities.minutesToHoursMinutesSeconds(snoozeDurationMinutes).seconds);
+        toBack();
     }
 
     public void setTimeRemainingDisplay(double paramMinutesRemaining) {

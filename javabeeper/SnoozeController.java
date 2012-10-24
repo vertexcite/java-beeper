@@ -108,7 +108,7 @@ public class SnoozeController {
 
 	private void updateObservers() {
 		for (SnoozeObserver observer : observers) {
-			observer.setSnoozeDuration(snoozeDurationMinutes);
+			observer.setSnoozeDurationAndDoSnooze(snoozeDurationMinutes);
 		}
 	}
 
