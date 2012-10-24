@@ -21,6 +21,7 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
     public AlertWindow() {
         initComponents();
         setSpaceAsActionForButtons();
+        getRootPane().setDefaultButton(snooze);
     }
 
     /**
@@ -174,7 +175,6 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                getRootPane().setDefaultButton(snooze);
                 setVisible(true);
 
                 
@@ -219,8 +219,9 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
         snoozeController.restartSnoozing(new Utilities.HoursMinutesSeconds(hours, minutes, seconds));
     }
 
-    private void setSpaceAsActionForButtons() {
-        // @todo: not sure if this is doing anything useful at the moment.
+    // @todo: not sure if this is doing anything useful at the moment.
+    // @todo: If this is doing anything, it seems to be application wide, move elsewhere.
+    private static void setSpaceAsActionForButtons() {
         InputMap im = (InputMap) UIManager.getDefaults().get("Button.focusInputMap");
         Object pressedAction = im.get(KeyStroke.getKeyStroke("pressed SPACE"));
         Object releasedAction = im.get(KeyStroke.getKeyStroke("released SPACE"));
