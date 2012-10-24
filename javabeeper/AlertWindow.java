@@ -34,10 +34,10 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
 
         snooze = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
-        snoozeTimeMinutes = new javax.swing.JTextField();
-        snoozeTimeSeconds = new javax.swing.JTextField();
-        snoozeTimeHours = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
+        snoozeTimeHours = new javax.swing.JSpinner();
+        snoozeTimeMinutes = new javax.swing.JSpinner();
+        snoozeTimeSeconds = new javax.swing.JSpinner();
         soundEnabled = new javax.swing.JCheckBox();
         jLabel2 = new javax.swing.JLabel();
         arbitraryMessage = new javax.swing.JTextField();
@@ -53,28 +53,13 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
             }
         });
 
-        snoozeTimeMinutes.setText("20");
-        snoozeTimeMinutes.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                snoozeTimeMinutesActionPerformed(evt);
-            }
-        });
-
-        snoozeTimeSeconds.setText("0");
-        snoozeTimeSeconds.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                snoozeTimeSecondsActionPerformed(evt);
-            }
-        });
-
-        snoozeTimeHours.setText("0");
-        snoozeTimeHours.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                snoozeTimeHoursActionPerformed(evt);
-            }
-        });
-
         jLabel1.setText("Snooze time (hh:mm:ss)");
+
+        snoozeTimeHours.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+
+        snoozeTimeMinutes.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(20), Integer.valueOf(0), null, Integer.valueOf(1)));
+
+        snoozeTimeSeconds.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -84,23 +69,23 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
                 .addContainerGap()
                 .add(jLabel1)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(snoozeTimeHours, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 30, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(snoozeTimeHours, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 58, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(snoozeTimeMinutes, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 30, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(snoozeTimeMinutes, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 58, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(snoozeTimeSeconds, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 30, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(48, Short.MAX_VALUE))
+                .add(snoozeTimeSeconds, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 58, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(10, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(12, Short.MAX_VALUE)
                 .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(snoozeTimeMinutes, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(snoozeTimeSeconds, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jLabel1)
                     .add(snoozeTimeHours, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jLabel1))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .add(snoozeTimeMinutes, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(snoozeTimeSeconds, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
 
         soundEnabled.setSelected(true);
@@ -145,25 +130,13 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
                 .add(jLabel2)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(arbitraryMessage, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 87, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 75, Short.MAX_VALUE)
                 .add(snooze)
                 .add(12, 12, 12))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void snoozeTimeHoursActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_snoozeTimeHoursActionPerformed
-        snoozeAction();
-    }//GEN-LAST:event_snoozeTimeHoursActionPerformed
-
-    private void snoozeTimeSecondsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_snoozeTimeSecondsActionPerformed
-        snoozeAction();
-    }//GEN-LAST:event_snoozeTimeSecondsActionPerformed
-
-    private void snoozeTimeMinutesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_snoozeTimeMinutesActionPerformed
-        snoozeAction();
-    }//GEN-LAST:event_snoozeTimeMinutesActionPerformed
 
     private void soundEnabledActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_soundEnabledActionPerformed
         snoozeController.setSoundEnabled(soundEnabled.isSelected());
@@ -183,9 +156,9 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JButton snooze;
-    private javax.swing.JTextField snoozeTimeHours;
-    private javax.swing.JTextField snoozeTimeMinutes;
-    private javax.swing.JTextField snoozeTimeSeconds;
+    private javax.swing.JSpinner snoozeTimeHours;
+    private javax.swing.JSpinner snoozeTimeMinutes;
+    private javax.swing.JSpinner snoozeTimeSeconds;
     private javax.swing.JCheckBox soundEnabled;
     // End of variables declaration//GEN-END:variables
 
@@ -234,22 +207,13 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
     @Override
     public void setSnoozeDuration(double snoozeDurationMinutes) {
             // TODO Set the values for HH, MM and SS correctly, just doing MM for now.
-            snoozeTimeMinutes.setText(Double.toString(snoozeDurationMinutes));
+            snoozeTimeMinutes.setValue(snoozeDurationMinutes);
     }
     
     public void snoozeAction() {
-        double hours = 0;
-        double minutes = 0;
-        double seconds = 0;
-        try {
-            hours = Double.parseDouble(snoozeTimeHours.getText());
-            minutes = Double.parseDouble(snoozeTimeMinutes.getText());
-            seconds = Double.parseDouble(snoozeTimeSeconds.getText());
-
-        }
-        catch (NumberFormatException e) {
-                // Do nothing about error, but proceed with values gathered so far.
-        }
+        int hours = (int) snoozeTimeHours.getValue();
+        int minutes = (int) snoozeTimeMinutes.getValue();
+        int seconds = (int) snoozeTimeSeconds.getValue();
 
         double totalSnoozeTimeMinutes = (hours * Utilities.MINUTES_PER_HOUR) + (minutes) + (seconds / Utilities.SECONDS_PER_MINUTE);
         snoozeController.restartSnoozing(totalSnoozeTimeMinutes);
