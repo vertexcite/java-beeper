@@ -215,7 +215,7 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
         int minutes = (int) snoozeTimeMinutes.getValue();
         int seconds = (int) snoozeTimeSeconds.getValue();
 
-        double totalSnoozeTimeMinutes = (hours * Utilities.MINUTES_PER_HOUR) + (minutes) + (seconds / Utilities.SECONDS_PER_MINUTE);
+        double totalSnoozeTimeMinutes = (hours * Utilities.MINUTES_PER_HOUR) + (minutes) + (((double)seconds) / Utilities.SECONDS_PER_MINUTE);
         snoozeController.restartSnoozing(totalSnoozeTimeMinutes);
     }
 
