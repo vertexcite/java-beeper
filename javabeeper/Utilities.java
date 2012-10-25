@@ -1,5 +1,13 @@
 package javabeeper;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * Commonly used utility methods.
  */
@@ -57,5 +65,37 @@ public class Utilities {
 
 	static final int MILLISECONDS_PER_SECOND = 1000;
 	static final int SECONDS_PER_MINUTE = 60;
+
+        
+        
+        public static int exec(Class klass, String... additionalArgs) throws IOException, InterruptedException {
+                String javaHome = System.getProperty("java.home");
+                String javaBin = javaHome +
+                        File.separator + "bin" +
+                        File.separator + "java";
+                String classpath = System.getProperty("java.class.path");
+                String className = klass.getCanonicalName();
+
+                List<String> args = new ArrayList<>();
+                
+                args.add(javaBin);
+                args.add("-cp");
+                args.add(classpath);
+                args.add(className);
+                args.addAll(Arrays.asList(additionalArgs));
+                
+                ProcessBuilder builder = new ProcessBuilder(args);
+
+                Process process = builder.start();
+                process.waitFor();
+                return process.exitValue();
+        }
+        
+        public static void execNoWait(Class klass, String... additionalArgs) {
+            try {
+                exec(klass, additionalArgs);
+            } catch (IOException | InterruptedException ex) {
+            }
+        }
 
 }

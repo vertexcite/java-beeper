@@ -1,8 +1,12 @@
 package javabeeper;
 
 import java.awt.GraphicsEnvironment;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javabeeper.Utilities.HoursMinutesSeconds;
 
 public class SnoozeController {
@@ -15,6 +19,8 @@ public class SnoozeController {
 	 */
 	private static final long EPSILON_MILLISECONDS = 1;
         private static final double PERIODIC_IRRITATION_INTERVAL_MINUTES = 1;
+        private boolean runningAsSlave;
+        private static final String AS_SLAVE_COMMAND_LINE_PARAM = "asSlave";
 
         private static void setNimbusLookAndFeel() {
             /* Set the Nimbus look and feel */
@@ -57,28 +63,41 @@ public class SnoozeController {
 
             final SnoozeController controller = new SnoozeController();
 
+            if(Arrays.asList(args).contains(AS_SLAVE_COMMAND_LINE_PARAM)) {
+                System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Snooze slave");
+
+                controller.runningAsSlave = true;
+                controller.alertAsSeparateProcess = false;
+                controller.setSnoozeDurationMinutes(Double.parseDouble(args[Arrays.asList(args).indexOf(AS_SLAVE_COMMAND_LINE_PARAM)+1]));
+                
+            }
+            
             
             /* Create and display the form */
 
             java.awt.EventQueue.invokeAndWait(new Runnable() {
                 @Override
                 public void run() {
-                    controller.monitorWindow = new MonitorWindow();
-                    controller.monitorWindow.setController(controller);
+                    if(!controller.runningAsSlave) {
+                        controller.monitorWindow = new MonitorWindow();
+                        controller.monitorWindow.setController(controller);
+                        controller.addObserver(controller.monitorWindow);
+                        controller.monitorWindow.setVisible(true);
+                    }
 
-                    controller.addObserver(controller.monitorWindow);
-                    controller.monitorWindow.setVisible(true);
-                    
                     controller.alertWindow = new AlertWindow();
                     controller.alertWindow.setController(controller);
                     controller.addObserver(controller.alertWindow);
                     controller.alertWindow.beepAndShow();
+
+                    controller.updateObservers();
                 }
             });
 
             
             controller.heartBeatLoop();
 	}
+        private boolean alertAsSeparateProcess=true;
 
 	protected void addObserver(SnoozeObserver observer) {
 		observers.add(observer);
@@ -99,6 +118,10 @@ public class SnoozeController {
 	 * @param paramSnoozeDurationMinutes Amount of time to snooze for.
 	 */
         public synchronized void restartSnoozing(final HoursMinutesSeconds hoursMinutesSeconds) {
+                if(runningAsSlave) {
+                    System.exit(0);
+                }
+            
 		snoozing = true;
 		hideAlert();
 		setSoundEnabled(true);
@@ -173,6 +196,9 @@ public class SnoozeController {
 
 	private synchronized void flagResynchRequired(long currentTimeMilliseconds) {
 		resynchReferenceTime = currentTimeMilliseconds;
+                if(heartBeatThread == null) {
+                    return;
+                }
 		heartBeatThread.interrupt();
 	}
 
@@ -181,15 +207,24 @@ public class SnoozeController {
 	}
 
 	private void showAlert() {
-		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-			public void run() {
-                                if(alertWindow == null) {
-                                return;
+                if (alertAsSeparateProcess) {
+                    try {
+                        Utilities.exec(SnoozeController.class, AS_SLAVE_COMMAND_LINE_PARAM, String.valueOf(snoozeDurationMinutes));
+                    } catch (IOException | InterruptedException ex) {
+                        Logger.getLogger(SnoozeController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    restartSnoozing(Utilities.minutesToHoursMinutesSeconds(snoozeDurationMinutes));
+                } else {
+                    javax.swing.SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                            public void run() {
+                                    if(alertWindow == null) {
+                                    return;
+                                }
+                                    alertWindow.beepAndShow();
                             }
-				alertWindow.beepAndShow();
-			}
-		});
+                    });
+                }
 	}
 
         private boolean useFullScreen=false;
@@ -216,6 +251,9 @@ public class SnoozeController {
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
                     @Override
 			public void run() {
+                                if(monitorWindow == null) {
+                                    return;
+                                }
 				monitorWindow.setTimeRemainingDisplay(minutesRemaining);
 			}
 		});
