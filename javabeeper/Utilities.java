@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Commonly used utility methods.
@@ -66,9 +64,7 @@ public class Utilities {
 	static final int MILLISECONDS_PER_SECOND = 1000;
 	static final int SECONDS_PER_MINUTE = 60;
 
-        
-        
-        public static int exec(Class klass, String... additionalArgs) throws IOException, InterruptedException {
+        public static int exec(Class klass, boolean wait, String... additionalArgs) throws IOException, InterruptedException {
                 String javaHome = System.getProperty("java.home");
                 String javaBin = javaHome +
                         File.separator + "bin" +
@@ -87,15 +83,24 @@ public class Utilities {
                 ProcessBuilder builder = new ProcessBuilder(args);
 
                 Process process = builder.start();
-                process.waitFor();
-                return process.exitValue();
+                if (wait) {
+                    process.waitFor();
+                    return process.exitValue();
+                } else {
+                    return 0;
+                }
         }
         
         public static void execNoWait(Class klass, String... additionalArgs) {
             try {
-                exec(klass, additionalArgs);
+                exec(klass, false, additionalArgs);
             } catch (IOException | InterruptedException ex) {
             }
         }
+        
+        public static int execAndWait(Class klass, String... additionalArgs) throws IOException, InterruptedException {
+            return exec(klass, true, additionalArgs);
+        }
+        
 
 }

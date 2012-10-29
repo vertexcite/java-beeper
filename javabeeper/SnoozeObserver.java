@@ -8,6 +8,8 @@ package javabeeper;
  */
 public interface SnoozeObserver {
 	void setSnoozeDurationAndDoSnooze(double snoozeDurationMinutes);
+        
+        void setSnoozeDuration(double snoozeDurationMinutes);
 
 	void setSoundEnabled(boolean soundEnabled);
 }

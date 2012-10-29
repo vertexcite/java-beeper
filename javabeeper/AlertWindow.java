@@ -206,9 +206,7 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
 
     @Override
     public void setSnoozeDurationAndDoSnooze(double snoozeDurationMinutes) {
-        snoozeTimeHours.setValue(Utilities.minutesToHoursMinutesSeconds(snoozeDurationMinutes).hours);
-        snoozeTimeMinutes.setValue(Utilities.minutesToHoursMinutesSeconds(snoozeDurationMinutes).minutes);
-        snoozeTimeSeconds.setValue(Utilities.minutesToHoursMinutesSeconds(snoozeDurationMinutes).seconds);
+        setSnoozeDuration(snoozeDurationMinutes);
         toBack();
     }
     
@@ -229,6 +227,13 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
 
         im.put(KeyStroke.getKeyStroke("pressed ENTER"), pressedAction);
         im.put(KeyStroke.getKeyStroke("released ENTER"), releasedAction);
+    }
+
+    @Override
+    public void setSnoozeDuration(double snoozeDurationMinutes) {
+        snoozeTimeHours.setValue(Utilities.minutesToHoursMinutesSeconds(snoozeDurationMinutes).hours);
+        snoozeTimeMinutes.setValue(Utilities.minutesToHoursMinutesSeconds(snoozeDurationMinutes).minutes);
+        snoozeTimeSeconds.setValue(Utilities.minutesToHoursMinutesSeconds(snoozeDurationMinutes).seconds);
     }
     
 }

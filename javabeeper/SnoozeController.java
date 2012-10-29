@@ -1,12 +1,9 @@
 package javabeeper;
 
 import java.awt.GraphicsEnvironment;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javabeeper.Utilities.HoursMinutesSeconds;
 
 public class SnoozeController {
@@ -19,6 +16,7 @@ public class SnoozeController {
 	 */
 	private static final long EPSILON_MILLISECONDS = 1;
         private static final double PERIODIC_IRRITATION_INTERVAL_MINUTES = 1;
+    public static final String BEEPER_LOGGER_ID = "Beeper";
         private boolean runningAsSlave;
         private static final String AS_SLAVE_COMMAND_LINE_PARAM = "asSlave";
 
@@ -36,7 +34,7 @@ public class SnoozeController {
                     }
                 }
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-                java.util.logging.Logger.getLogger(MonitorWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                java.util.logging.Logger.getLogger(BEEPER_LOGGER_ID).log(java.util.logging.Level.SEVERE, null, ex);
             }
             //</editor-fold>
         }
@@ -59,17 +57,26 @@ public class SnoozeController {
          */
 
 	public static void main(String args[]) throws Exception {
+            
             setNimbusLookAndFeel();
 
             final SnoozeController controller = new SnoozeController();
-
+            
             if(Arrays.asList(args).contains(AS_SLAVE_COMMAND_LINE_PARAM)) {
                 System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Snooze slave");
 
                 controller.runningAsSlave = true;
                 controller.alertAsSeparateProcess = false;
-                controller.setSnoozeDurationMinutes(Double.parseDouble(args[Arrays.asList(args).indexOf(AS_SLAVE_COMMAND_LINE_PARAM)+1]));
+                controller.setSnoozeDurationMinutesAndDoSnooze(Double.parseDouble(args[Arrays.asList(args).indexOf(AS_SLAVE_COMMAND_LINE_PARAM)+1]));
                 
+                int port = Integer.parseInt(args[Arrays.asList(args).indexOf(AS_SLAVE_COMMAND_LINE_PARAM)+2]);
+                
+                controller.addObserver(new SocketIpcClient(port));
+                
+            }
+            
+            if(controller.alertAsSeparateProcess) {
+                controller.tryStartIpcServer();
             }
             
             
@@ -85,12 +92,14 @@ public class SnoozeController {
                         controller.monitorWindow.setVisible(true);
                     }
 
-                    controller.alertWindow = new AlertWindow();
-                    controller.alertWindow.setController(controller);
-                    controller.addObserver(controller.alertWindow);
-                    controller.alertWindow.beepAndShow();
+                    if(controller.runningAsSlave || !controller.alertAsSeparateProcess) {
+                        controller.alertWindow = new AlertWindow();
+                        controller.alertWindow.setController(controller);
+                        controller.addObserver(controller.alertWindow);
+                    }
 
-                    controller.updateObservers();
+                    controller.showAlert();
+                    controller.updatAllObservers();
                 }
             });
 
@@ -98,19 +107,20 @@ public class SnoozeController {
             controller.heartBeatLoop();
 	}
         private boolean alertAsSeparateProcess=true;
+        private SocketIpcServer socketServer;
 
 	protected void addObserver(SnoozeObserver observer) {
 		observers.add(observer);
 	}
 
-	public synchronized void setSnoozeDurationMinutes(final double paramSnoozeDurationMinutes) {
+	public synchronized void setSnoozeDurationMinutesAndDoSnooze(final double paramSnoozeDurationMinutes) {
 		long currentTimeMilliseconds = System.currentTimeMillis();
 		nextWakeTimeMilliseconds = currentTimeMilliseconds + Utilities.fromMinutesToMilliseconds(paramSnoozeDurationMinutes);
 
 		flagResynchRequired(currentTimeMilliseconds);
 
 		snoozeDurationMinutes = paramSnoozeDurationMinutes;
-		updateObservers();
+		updateAndSnoozeAllObservers();
 	}
 
 	/**
@@ -118,20 +128,26 @@ public class SnoozeController {
 	 * @param paramSnoozeDurationMinutes Amount of time to snooze for.
 	 */
         public synchronized void restartSnoozing(final HoursMinutesSeconds hoursMinutesSeconds) {
-                if(runningAsSlave) {
-                    System.exit(0);
-                }
-            
 		snoozing = true;
 		hideAlert();
 		setSoundEnabled(true);
-		setSnoozeDurationMinutes(hoursMinutesSeconds.asMinutes());
+		setSnoozeDurationMinutesAndDoSnooze(hoursMinutesSeconds.asMinutes());
 		updateRemainingTimeDisplay();
+
+                if(runningAsSlave) {
+                    System.exit(0);
+                }
 	}
 
-	private void updateObservers() {
+	private void updateAndSnoozeAllObservers() {
 		for (SnoozeObserver observer : observers) {
 			observer.setSnoozeDurationAndDoSnooze(snoozeDurationMinutes);
+		}
+	}
+
+	private void updatAllObservers() {
+		for (SnoozeObserver observer : observers) {
+			observer.setSnoozeDuration(snoozeDurationMinutes);
 		}
 	}
 
@@ -172,7 +188,7 @@ public class SnoozeController {
 
 			updateRemainingTimeDisplay();
 
-			if (shouldIrritate()) {
+			if (!alertAsSeparateProcess && shouldIrritate()) {
 				showAlert();
 				updateNextIrritateTime();
 			}
@@ -206,14 +222,10 @@ public class SnoozeController {
 		nextIrritateTimeMilliseconds = System.currentTimeMillis() + Utilities.MILLISECONDS_PER_SECOND + Utilities.fromMinutesToMilliseconds(PERIODIC_IRRITATION_INTERVAL_MINUTES);
 	}
 
-	private void showAlert() {
+
+        private void showAlert() {
                 if (alertAsSeparateProcess) {
-                    try {
-                        Utilities.exec(SnoozeController.class, AS_SLAVE_COMMAND_LINE_PARAM, String.valueOf(snoozeDurationMinutes));
-                    } catch (IOException | InterruptedException ex) {
-                        Logger.getLogger(SnoozeController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    restartSnoozing(Utilities.minutesToHoursMinutesSeconds(snoozeDurationMinutes));
+                    Utilities.execNoWait(SnoozeController.class, AS_SLAVE_COMMAND_LINE_PARAM, String.valueOf(snoozeDurationMinutes), String.valueOf(socketServer.getPort()));
                 } else {
                     javax.swing.SwingUtilities.invokeLater(new Runnable() {
                         @Override
@@ -295,6 +307,12 @@ public class SnoozeController {
 
     void setUseFullScreen(boolean useFullScreen) {
         this.useFullScreen = useFullScreen;
+    }
+
+    private void tryStartIpcServer() {
+        socketServer = new SocketIpcServer(this);
+        socketServer.listen();
+        
     }
 
 }
