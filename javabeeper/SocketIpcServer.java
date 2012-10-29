@@ -18,7 +18,6 @@ public class SocketIpcServer {
         return port;
     }
     private boolean listening = false;
-    private BufferedReader in;
 
     private ServerSocket serverSocket = null;
 
@@ -54,7 +53,6 @@ public class SocketIpcServer {
     
     public void close() {
         try {
-            in.close();
             serverSocket.close();
         } catch (IOException ex) {
             Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.SEVERE, "Problem closing port:" + port, ex);
@@ -70,7 +68,7 @@ public class SocketIpcServer {
                     try {
                         clientSocket = serverSocket.accept();
                         Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.INFO, "Received client connection " + clientSocket.getInetAddress());
-                        in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                        BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                         PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
 
                         String inputLine;
@@ -87,5 +85,32 @@ public class SocketIpcServer {
                 }
             }
         }.start();
+    }
+    
+    public static void main (String[] args) {
+        SocketIpcServer server = new SocketIpcServer(null);
+
+                while(true) {
+                    try {
+                        Socket clientSocket = server.serverSocket.accept();
+
+                        Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.INFO, "Received client connection " + clientSocket.getInetAddress());
+
+                        BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                        PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+
+                        String inputLine;
+                        if((inputLine = in.readLine()) != null) {
+                            double snoozeDuration = Double.parseDouble(inputLine);
+                            Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.INFO, "Received snooze signal, duration (minutes): {0}", snoozeDuration);
+                            out.println("OK, got " + snoozeDuration);
+                            
+                        }
+                    } catch (IOException ex) {
+                        Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.SEVERE, "Problem accepting input on server port: " + server.port, ex);
+                    }
+                }
+        
+        
     }
 }

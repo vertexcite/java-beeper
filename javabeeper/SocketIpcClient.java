@@ -17,8 +17,10 @@ import java.util.logging.Level;
  * @author rbri053
  */
 public class SocketIpcClient implements SnoozeObserver {
-    private PrintWriter out = null;
+    
     private final int port;
+
+    private PrintWriter out = null;
     private BufferedReader in = null;
     
     public SocketIpcClient(int port) {
@@ -51,6 +53,14 @@ public class SocketIpcClient implements SnoozeObserver {
 //            String reply = in.readLine();
 
             out.println(minutes);
+            out.println();
+            out.println();
+            out.println();
+            out.println();
+            out.println();
+            out.println();
+            out.println();
+            out.flush();
             java.util.logging.Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.INFO, "Transmitted datum: {0} to 127.0.0.1:{1}", new Object[]{minutes, port});
 //            out.flush();
             
