@@ -18,6 +18,7 @@ public class SnoozeController {
         private static final double PERIODIC_IRRITATION_INTERVAL_MINUTES = 1;
         public static final String BEEPER_LOGGER_ID = "Beeper";
         public static final String USE_FULL_SCREEN_COMMAND_LINE_PARAM = "useFullScreen";
+        public static final String SNOOZE_SOCKET_MESSAGE_CLIENT_CAN_QUIT = "Client-can-quit.";
         private boolean runningAsSlave;
         private static final String AS_SLAVE_COMMAND_LINE_PARAM = "asSlave";
 
@@ -71,8 +72,10 @@ public class SnoozeController {
                 controller.setSnoozeDurationMinutesAndDoSnooze(Double.parseDouble(args[Arrays.asList(args).indexOf(AS_SLAVE_COMMAND_LINE_PARAM)+1]));
                 
                 int port = Integer.parseInt(args[Arrays.asList(args).indexOf(AS_SLAVE_COMMAND_LINE_PARAM)+2]);
+                final SocketIpcClient socketIpcClient = new SocketIpcClient(port);
                 
-                controller.addObserver(new SocketIpcClient(port));
+                controller.addObserver(socketIpcClient);
+                socketIpcClient.startListening();
 
                 controller.useFullScreen = (Arrays.asList(args).contains(USE_FULL_SCREEN_COMMAND_LINE_PARAM));
             }
@@ -334,10 +337,14 @@ public class SnoozeController {
             setupAlertWindow();
             socketServer.close();
         } else {
-            observers.remove(alertWindow);
+            removeObserver(alertWindow);
             tryStartIpcServer();
         }
         
+    }
+
+    void removeObserver(SnoozeObserver observer) {
+        observers.remove(observer);
     }
 
 }

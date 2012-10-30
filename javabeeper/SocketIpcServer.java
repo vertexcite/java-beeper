@@ -28,28 +28,7 @@ public class SocketIpcServer {
     public SocketIpcServer(final SnoozeController snoozeController) {
         this.snoozeController = snoozeController;
         
-        Random random = new Random();
-
-        int retryCount = 0;
-        
-        while(!listening && retryCount < RETRY_COUNT_MAX) {
-            port = random.nextInt() % 10000 + 20000;
-
-            try {
-                retryCount++;
-                serverSocket = new ServerSocket(port);
-                listening = true;
-            } catch (IOException ex) {
-                Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.SEVERE, "Problem creating server socket on port " + port, ex);
-            }
-        }
-        if (!listening) {
-            Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.SEVERE, "Problem creating server, number of retries: " +retryCount, new IOException("Couldn't create server"));
-            System.exit(1);
-        }
-        
-        Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.INFO, "Successfully created server, listening on port: {0}", port);
-
+        createServerSocket();
     }
     
     private SnoozeController snoozeController;
@@ -81,6 +60,8 @@ public class SocketIpcServer {
                         BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                         PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
                         out.println("Hello, this is the Snooze socket server.");
+                        
+                        snoozeController.addObserver(new ConnectionToClient(clientSocket));
 
                         String inputLine;
                         if((inputLine = in.readLine()) != null) {
@@ -125,6 +106,68 @@ public class SocketIpcServer {
                     }
                 }
         
+        
+    }
+
+    private void createServerSocket() {
+        Random random = new Random();
+
+        int retryCount = 0;
+        
+        while(!listening && retryCount < RETRY_COUNT_MAX) {
+            port = random.nextInt() % 10000 + 20000;
+
+            try {
+                retryCount++;
+                serverSocket = new ServerSocket(port);
+                listening = true;
+            } catch (IOException ex) {
+                Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.SEVERE, "Problem creating server socket on port " + port, ex);
+            }
+        }
+        if (!listening) {
+            Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.SEVERE, "Problem creating server, number of retries: " +retryCount, new IOException("Couldn't create server"));
+            System.exit(1);
+        }
+        
+        Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.INFO, "Successfully created server, listening on port: {0}", port);
+    }
+    
+    class ConnectionToClient implements SnoozeObserver {
+        private PrintWriter particularClientOut = null;
+        private Socket clientSocket = null;
+
+        private ConnectionToClient(Socket clientSocket) {
+            try {
+                this.clientSocket = clientSocket;
+                particularClientOut = new PrintWriter(clientSocket.getOutputStream(), true);
+            } catch (IOException ex) {
+                Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.SEVERE, "Problem getting input, for client socket: " + clientSocket.getInetAddress(), ex);
+            }
+        }
+
+        @Override
+        public void setSnoozeDurationAndDoSnooze(double snoozeDurationMinutes) {
+            particularClientOut.println(SnoozeController.SNOOZE_SOCKET_MESSAGE_CLIENT_CAN_QUIT);
+            try {
+                clientSocket.close();
+            } catch (IOException ex) {
+                Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.SEVERE, "Problem closing a particular client socket: " + clientSocket.getInetAddress(), ex);
+            }
+            
+        }
+
+        @Override
+        public void setSnoozeDuration(double snoozeDurationMinutes) {
+        }
+
+        @Override
+        public void setSoundEnabled(boolean soundEnabled) {
+        }
+
+        @Override
+        public void itIsTimeToShowAlert() {
+        }
         
     }
 }
