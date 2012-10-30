@@ -29,8 +29,7 @@ public class SocketIpcServer {
         int retryCount = 0;
         
         while(!listening && retryCount < RETRY_COUNT_MAX) {
-//            port = random.nextInt() % 10000 + 10000;
-            port = 21007;
+            port = random.nextInt() % 10000 + 20000;
 
             try {
                 retryCount++;
@@ -45,7 +44,7 @@ public class SocketIpcServer {
             System.exit(1);
         }
         
-        Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.INFO, "Successfully created server, listening on port: " + port);
+        Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.INFO, "Successfully created server, listening on port: {0}", port);
 
     }
     
@@ -62,14 +61,16 @@ public class SocketIpcServer {
 
     public void listen() {
         new Thread() {
+            @Override
             public void run() {
                 Socket clientSocket = null;
                 while(true) {
                     try {
                         clientSocket = serverSocket.accept();
-                        Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.INFO, "Received client connection " + clientSocket.getInetAddress());
+                        Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.INFO, "Received client connection {0}", clientSocket.getInetAddress());
                         BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                         PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+                        out.println("Hello, this is the Snooze socket server.");
 
                         String inputLine;
                         if((inputLine = in.readLine()) != null) {
@@ -94,7 +95,7 @@ public class SocketIpcServer {
                     try {
                         Socket clientSocket = server.serverSocket.accept();
 
-                        Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.INFO, "Received client connection " + clientSocket.getInetAddress());
+                        Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.INFO, "Received client connection {0}", clientSocket.getInetAddress());
 
                         BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                         PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
