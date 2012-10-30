@@ -36,6 +36,7 @@ public class MonitorWindow extends javax.swing.JFrame implements SnoozeObserver 
         snoozeTimeHours = new javax.swing.JSpinner();
         snoozeTimeMinutes = new javax.swing.JSpinner();
         snoozeTimeSeconds = new javax.swing.JSpinner();
+        alertAsSeparateProcess = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Java Beeper");
@@ -106,6 +107,13 @@ public class MonitorWindow extends javax.swing.JFrame implements SnoozeObserver 
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        alertAsSeparateProcess.setText("Display alert as a separate process (sometimes helps with UI focus issues).");
+        alertAsSeparateProcess.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                alertAsSeparateProcessActionPerformed(evt);
+            }
+        });
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -128,13 +136,14 @@ public class MonitorWindow extends javax.swing.JFrame implements SnoozeObserver 
                                     .add(useFullScreen)))
                             .add(layout.createSequentialGroup()
                                 .addContainerGap()
-                                .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                        .add(0, 64, Short.MAX_VALUE)))
+                                .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                            .add(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(resetCountdown_button)
+                                    .add(alertAsSeparateProcess))))
+                        .add(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
-            .add(layout.createSequentialGroup()
-                .addContainerGap()
-                .add(resetCountdown_button)
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -147,11 +156,13 @@ public class MonitorWindow extends javax.swing.JFrame implements SnoozeObserver 
                 .add(soundEnabled)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(useFullScreen)
-                .add(18, 18, 18)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(alertAsSeparateProcess)
+                .add(23, 23, 23)
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(resetCountdown_button)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 31, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 47, Short.MAX_VALUE)
                 .add(jLabel3)
                 .addContainerGap())
         );
@@ -171,8 +182,13 @@ public class MonitorWindow extends javax.swing.JFrame implements SnoozeObserver 
         snoozeAction();
     }//GEN-LAST:event_resetCountdown_buttonActionPerformed
 
+    private void alertAsSeparateProcessActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_alertAsSeparateProcessActionPerformed
+        snoozeController.setUseSeparateProcess(alertAsSeparateProcess.isSelected());
+    }//GEN-LAST:event_alertAsSeparateProcessActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox alertAsSeparateProcess;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -208,6 +224,7 @@ public class MonitorWindow extends javax.swing.JFrame implements SnoozeObserver 
     public void setSnoozeDurationAndDoSnooze(double snoozeDurationMinutes) {
         setSnoozeDuration(snoozeDurationMinutes);
         toBack();
+        alertAsSeparateProcess.setEnabled(true);
     }
     
 
@@ -224,6 +241,11 @@ public class MonitorWindow extends javax.swing.JFrame implements SnoozeObserver 
         long seconds = (long) snoozeTimeSeconds.getValue();
 
         snoozeController.restartSnoozing(new Utilities.HoursMinutesSeconds(hours, minutes, seconds));
+    }
+
+    @Override
+    public void itIsTimeToShowAlert() {
+        alertAsSeparateProcess.setEnabled(false);
     }
     
 

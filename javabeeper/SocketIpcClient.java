@@ -63,4 +63,8 @@ public class SocketIpcClient implements SnoozeObserver {
     @Override
     public void setSnoozeDuration(double snoozeDurationMinutes) {
     }
+
+    @Override
+    public void itIsTimeToShowAlert() {
+    }
 }

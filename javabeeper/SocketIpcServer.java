@@ -19,6 +19,10 @@ public class SocketIpcServer {
     }
     private boolean listening = false;
 
+    public synchronized boolean isListening() {
+        return listening;
+    }
+
     private ServerSocket serverSocket = null;
 
     public SocketIpcServer(final SnoozeController snoozeController) {
@@ -50,23 +54,29 @@ public class SocketIpcServer {
     
     private SnoozeController snoozeController;
     
-    public void close() {
+    public synchronized void close() {
+        listening = false;
         try {
             serverSocket.close();
         } catch (IOException ex) {
             Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.SEVERE, "Problem closing port:" + port, ex);
         }
-
     }
 
+    private Thread serverThread = null;
+    
     public void listen() {
-        new Thread() {
+        serverThread = new Thread() {
             @Override
             public void run() {
                 Socket clientSocket = null;
-                while(true) {
+                while(isListening()) {
                     try {
-                        clientSocket = serverSocket.accept();
+                        if(isListening()) {
+                            clientSocket = serverSocket.accept();
+                        } else {
+                            break;
+                        }
                         Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.INFO, "Received client connection {0}", clientSocket.getInetAddress());
                         BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                         PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
@@ -81,11 +91,14 @@ public class SocketIpcServer {
                             snoozeController.restartSnoozing(Utilities.minutesToHoursMinutesSeconds(snoozeDuration));
                         }
                     } catch (IOException ex) {
-                        Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.SEVERE, "Problem accepting input on server port: " + port, ex);
-                    }
+                        if(snoozeController.isAlertAsSeparateProcess()) {
+                            Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.SEVERE, "Problem accepting input on server port: " + port, ex);
+                        }
+                    } 
                 }
             }
-        }.start();
+        };
+        serverThread.start();
     }
     
     public static void main (String[] args) {

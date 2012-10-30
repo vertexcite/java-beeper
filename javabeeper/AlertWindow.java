@@ -235,5 +235,10 @@ public class AlertWindow extends javax.swing.JFrame implements SnoozeObserver {
         snoozeTimeMinutes.setValue(Utilities.minutesToHoursMinutesSeconds(snoozeDurationMinutes).minutes);
         snoozeTimeSeconds.setValue(Utilities.minutesToHoursMinutesSeconds(snoozeDurationMinutes).seconds);
     }
+
+    @Override
+    public void itIsTimeToShowAlert() {
+        beepAndShow();
+    }
     
 }

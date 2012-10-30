@@ -95,20 +95,30 @@ public class SnoozeController {
                     }
 
                     if(controller.runningAsSlave || !controller.alertAsSeparateProcess) {
-                        controller.alertWindow = new AlertWindow();
-                        controller.alertWindow.setController(controller);
-                        controller.addObserver(controller.alertWindow);
+                        controller.setupAlertWindow();
                     }
 
                     controller.showAlert();
                     controller.updatAllObservers();
                 }
+
             });
 
             
             controller.heartBeatLoop();
 	}
-        private boolean alertAsSeparateProcess=true;
+
+        public void setupAlertWindow() {
+            alertWindow = new AlertWindow();
+            alertWindow.setController(this);
+            addObserver(alertWindow);
+        }
+
+        private boolean alertAsSeparateProcess=false;
+
+        public boolean isAlertAsSeparateProcess() {
+            return alertAsSeparateProcess;
+        }
         private SocketIpcServer socketServer;
 
 	protected void addObserver(SnoozeObserver observer) {
@@ -234,17 +244,11 @@ public class SnoozeController {
                         fullScreenParam = USE_FULL_SCREEN_COMMAND_LINE_PARAM;
                     }
                     Utilities.execNoWait(SnoozeController.class, fullScreenParam, AS_SLAVE_COMMAND_LINE_PARAM, String.valueOf(snoozeDurationMinutes), String.valueOf(socketServer.getPort()));
+          
                     
-                } else {
-                    javax.swing.SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                            public void run() {
-                                    if(alertWindow == null) {
-                                    return;
-                                }
-                                    alertWindow.beepAndShow();
-                            }
-                    });
+                } 
+                for(SnoozeObserver observer:observers) {
+                    observer.itIsTimeToShowAlert();
                 }
 	}
 
@@ -321,6 +325,18 @@ public class SnoozeController {
     private void tryStartIpcServer() {
         socketServer = new SocketIpcServer(this);
         socketServer.listen();
+        
+    }
+
+    void setUseSeparateProcess(boolean alertAsSeparateProcess) {
+        this.alertAsSeparateProcess = alertAsSeparateProcess;
+        if(runningAsSlave || !alertAsSeparateProcess) {
+            setupAlertWindow();
+            socketServer.close();
+        } else {
+            observers.remove(alertWindow);
+            tryStartIpcServer();
+        }
         
     }
 
