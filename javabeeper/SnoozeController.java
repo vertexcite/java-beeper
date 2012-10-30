@@ -16,7 +16,8 @@ public class SnoozeController {
 	 */
 	private static final long EPSILON_MILLISECONDS = 1;
         private static final double PERIODIC_IRRITATION_INTERVAL_MINUTES = 1;
-    public static final String BEEPER_LOGGER_ID = "Beeper";
+        public static final String BEEPER_LOGGER_ID = "Beeper";
+        public static final String USE_FULL_SCREEN_COMMAND_LINE_PARAM = "useFullScreen";
         private boolean runningAsSlave;
         private static final String AS_SLAVE_COMMAND_LINE_PARAM = "asSlave";
 
@@ -72,7 +73,8 @@ public class SnoozeController {
                 int port = Integer.parseInt(args[Arrays.asList(args).indexOf(AS_SLAVE_COMMAND_LINE_PARAM)+2]);
                 
                 controller.addObserver(new SocketIpcClient(port));
-                
+
+                controller.useFullScreen = (Arrays.asList(args).contains(USE_FULL_SCREEN_COMMAND_LINE_PARAM));
             }
             
             if(controller.alertAsSeparateProcess) {
@@ -111,6 +113,8 @@ public class SnoozeController {
 
 	protected void addObserver(SnoozeObserver observer) {
 		observers.add(observer);
+                observer.setSnoozeDuration(snoozeDurationMinutes);
+                observer.setSoundEnabled(soundEnabled);
 	}
 
 	public synchronized void setSnoozeDurationMinutesAndDoSnooze(final double paramSnoozeDurationMinutes) {
@@ -224,8 +228,13 @@ public class SnoozeController {
 
 
         private void showAlert() {
+                String fullScreenParam = "";
                 if (alertAsSeparateProcess) {
-                    Utilities.execNoWait(SnoozeController.class, AS_SLAVE_COMMAND_LINE_PARAM, String.valueOf(snoozeDurationMinutes), String.valueOf(socketServer.getPort()));
+                    if(useFullScreen) {
+                        fullScreenParam = USE_FULL_SCREEN_COMMAND_LINE_PARAM;
+                    }
+                    Utilities.execNoWait(SnoozeController.class, fullScreenParam, AS_SLAVE_COMMAND_LINE_PARAM, String.valueOf(snoozeDurationMinutes), String.valueOf(socketServer.getPort()));
+                    
                 } else {
                     javax.swing.SwingUtilities.invokeLater(new Runnable() {
                         @Override
