@@ -328,7 +328,7 @@ public class SnoozeController {
     private void tryStartIpcServer() {
         socketServer = new SocketIpcServer(this);
         socketServer.listen();
-        
+        addObserver(socketServer);
     }
 
     void setUseSeparateProcess(boolean alertAsSeparateProcess) {
@@ -336,6 +336,7 @@ public class SnoozeController {
         if(runningAsSlave || !alertAsSeparateProcess) {
             setupAlertWindow();
             socketServer.close();
+            removeObserver(socketServer);
         } else {
             removeObserver(alertWindow);
             tryStartIpcServer();

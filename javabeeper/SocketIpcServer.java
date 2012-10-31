@@ -10,7 +10,7 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class SocketIpcServer {
+public class SocketIpcServer implements SnoozeObserver {
     public static final int RETRY_COUNT_MAX = 100;
     private int port;
 
@@ -43,6 +43,8 @@ public class SocketIpcServer {
     }
 
     private Thread serverThread = null;
+
+    private ConnectionToClient aConnectionToClient;
     
     public void listen() {
         serverThread = new Thread() {
@@ -53,14 +55,15 @@ public class SocketIpcServer {
                     try {
                         clientSocket = serverSocket.accept();
                         Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.INFO, "Received client connection {0}", clientSocket.getInetAddress());
-                        final ConnectionToClient aConnectionToClient = new ConnectionToClient(clientSocket);
-                        snoozeController.addObserver(aConnectionToClient);
+                        aConnectionToClient = new ConnectionToClient(clientSocket);
                         aConnectionToClient.waitForAndProcessInput();
+                        clientSocket.close();
                     } catch (IOException ex) {
                         if(snoozeController.isAlertAsSeparateProcess()) {
-                            Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.SEVERE, "Problem while waiting for connection on server port: " + port, ex);
+                            Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.SEVERE, "Problem while waiting for connection on server port: " + port + ", or while handling/closing client port", ex);
                         }
                     }
+
                 }
             }
         };
@@ -90,8 +93,28 @@ public class SocketIpcServer {
         
         Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.INFO, "Successfully created server, listening on port: {0}", port);
     }
+
+    @Override
+    public void setSnoozeDurationAndDoSnooze(double snoozeDurationMinutes) {
+        if(aConnectionToClient == null) {
+            return;
+        }
+        aConnectionToClient.tellClientItMayQuit();
+    }
+
+    @Override
+    public void setSnoozeDuration(double snoozeDurationMinutes) {
+    }
+
+    @Override
+    public void setSoundEnabled(boolean soundEnabled) {
+    }
+
+    @Override
+    public void itIsTimeToShowAlert() {
+    }
     
-    class ConnectionToClient implements SnoozeObserver {
+    class ConnectionToClient {
         private PrintWriter out = null;
         private Socket clientSocket = null;
         private boolean clientConnectionActive = true;
@@ -108,8 +131,7 @@ public class SocketIpcServer {
             }
         }
 
-        @Override
-        public void setSnoozeDurationAndDoSnooze(double snoozeDurationMinutes) {
+        public void tellClientItMayQuit() {
             out.println(SnoozeController.SNOOZE_SOCKET_MESSAGE_CLIENT_CAN_QUIT);
             Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.INFO, "Sent quit message to client: {0}", clientSocket.getInetAddress());
             setClientConnectionActive(false);
@@ -119,19 +141,6 @@ public class SocketIpcServer {
             } catch (IOException ex) {
                 Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.SEVERE, "Problem closing a particular client socket: " + clientSocket.getInetAddress(), ex);
             }
-            
-        }
-
-        @Override
-        public void setSnoozeDuration(double snoozeDurationMinutes) {
-        }
-
-        @Override
-        public void setSoundEnabled(boolean soundEnabled) {
-        }
-
-        @Override
-        public void itIsTimeToShowAlert() {
         }
 
         private void waitForAndProcessInput() {
