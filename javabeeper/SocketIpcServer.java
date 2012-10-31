@@ -82,33 +82,6 @@ public class SocketIpcServer {
         serverThread.start();
     }
     
-    public static void main (String[] args) {
-        SocketIpcServer server = new SocketIpcServer(null);
-
-                while(true) {
-                    try {
-                        Socket clientSocket = server.serverSocket.accept();
-
-                        Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.INFO, "Received client connection {0}", clientSocket.getInetAddress());
-
-                        BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                        PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-
-                        String inputLine;
-                        if((inputLine = in.readLine()) != null) {
-                            double snoozeDuration = Double.parseDouble(inputLine);
-                            Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.INFO, "Received snooze signal, duration (minutes): {0}", snoozeDuration);
-                            out.println("OK, got " + snoozeDuration);
-                            
-                        }
-                    } catch (IOException ex) {
-                        Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.SEVERE, "Problem accepting input on server port: " + server.port, ex);
-                    }
-                }
-        
-        
-    }
-
     private void createServerSocket() {
         Random random = new Random();
 

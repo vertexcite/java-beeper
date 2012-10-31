@@ -38,11 +38,6 @@ public class SocketIpcClient implements SnoozeObserver {
 
     }
     
-    public static void main(String[] args) {
-        SocketIpcClient s = new SocketIpcClient(21007);
-        s.sendTimeMinutes(26.1);
-    }
-    
     public void sendTimeMinutes(double minutes) {
             out.println(minutes);
             java.util.logging.Logger.getLogger(SnoozeController.BEEPER_LOGGER_ID).log(Level.INFO, "Transmitted datum: {0} to 127.0.0.1:{1}", new Object[]{minutes, port});
