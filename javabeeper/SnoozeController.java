@@ -9,7 +9,7 @@ import javabeeper.Utilities.HoursMinutesSeconds;
 public class SnoozeController {
 
 	private static final int HEART_BEAT_PERIOD_MILLISECONDS = 1000;
-	public static final String versionString = "Version 0.17";
+	public static final String versionString = "Version 0.18";
 	
 	/**
 	 * Small offset for time calculation to help alleviate rounding when converting from milliseconds to time display.

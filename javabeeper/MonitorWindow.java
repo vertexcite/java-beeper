@@ -47,7 +47,7 @@ public class MonitorWindow extends javax.swing.JFrame implements SnoozeObserver 
         timeRemaining.setFont(new java.awt.Font("Lucida Grande", 1, 72)); // NOI18N
         timeRemaining.setText(" ");
 
-        jLabel3.setText("Version: 0.17");
+        jLabel3.setText("Version: 0.18");
 
         soundEnabled.setSelected(true);
         soundEnabled.setText("Enable audio. (Note: if disabled, then resetting snooze will enable audio again)");
